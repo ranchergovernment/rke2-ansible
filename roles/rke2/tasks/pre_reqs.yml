@@ -10,6 +10,7 @@
   when:
     - ansible_facts.services["firewalld.service"] is defined
     - ansible_facts.services["firewalld.service"].status != "not-found"
+    - not rke2_ignore_firewalld
   notify: "Restart {{ service_name }}"
   tags: ["setup-os"]
 
