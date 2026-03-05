@@ -40,7 +40,7 @@
   ansible.builtin.include_tasks: add_ansible_managed_config.yml
   vars:
     file_contents: "{{ lookup('file', rke2_pod_security_admission_config_file_path) }}"
-    file_destination: "/etc/rancher/rke2/rke2-pss.yaml"
+    file_destination: "/etc/rancher/rke2/pod-security-admission-config.yaml"
     file_description: "pod security admission config"
     file_path: "{{ rke2_pod_security_admission_config_file_path }}"
   when:
