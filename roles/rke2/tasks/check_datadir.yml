@@ -23,4 +23,4 @@
 - name: Set data-dir to default path
   ansible.builtin.set_fact:
     rke2_data_dir: '/var/lib/rancher/rke2'
-  when: rke2_data_dir is not defined
+  when: rke2_data_dir is not defined or not rke2_data_dir
