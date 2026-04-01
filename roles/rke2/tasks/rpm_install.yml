@@ -59,6 +59,7 @@
 
         - name: Clean yum cache
           ansible.builtin.command: yum clean all
+          changed_when: false
 
 - name: Install all from local directory
   when: rke2_rpms_path | length > 0
