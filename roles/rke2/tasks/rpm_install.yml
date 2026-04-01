@@ -45,6 +45,20 @@
       retries: 10
       until: result is succeeded
       delay: 30
+          
+    - name: Clean repo files
+      when: rke2_clean_repos
+      block:
+        - name: Remove the playbook-created repos
+          ansible.builtin.yum_repository:
+            name: "{{ item }}"
+            state: absent
+          loop:
+            - "{{ rke2_common_yum_repo.name }}"
+            - "{{ rke2_versioned_yum_repo.name }}"
+
+        - name: Clean yum cache
+          ansible.builtin.command: yum clean all
 
 - name: Install all from local directory
   when: rke2_rpms_path | length > 0
