@@ -45,7 +45,7 @@
       retries: 10
       until: result is succeeded
       delay: 30
-          
+
     - name: Clean repo files
       when: rke2_clean_repos
       block:
