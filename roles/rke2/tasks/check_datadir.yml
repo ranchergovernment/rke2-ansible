@@ -1,20 +1,9 @@
 ---
-- name: Set data-dir from cluster config var or use default
+- name: Set rke2_data_dir
   ansible.builtin.set_fact:
-    rke2_data_dir: "{{ (cluster_rke2_config | from_yaml).get('data-dir', '/var/lib/rancher/rke2') }}"
-  when: cluster_rke2_config | length > 0
-
-- name: Set data-dir from group config var or use default
-  ansible.builtin.set_fact:
-    rke2_data_dir: "{{ (group_rke2_config | from_yaml).get('data-dir', '/var/lib/rancher/rke2') }}"
-  when: group_rke2_config | length > 0
-
-- name: Set data-dir from host config var or use default
-  ansible.builtin.set_fact:
-    rke2_data_dir: "{{ (host_rke2_config | from_yaml).get('data-dir', '/var/lib/rancher/rke2') }}"
-  when: host_rke2_config | length > 0
-
-- name: Set data-dir to default path
-  ansible.builtin.set_fact:
-    rke2_data_dir: '/var/lib/rancher/rke2'
-  when: rke2_data_dir is not defined
+    rke2_data_dir: >-
+      {{
+        (cluster_rke2_config | from_yaml).get('data-dir') | default(
+        (group_rke2_config | from_yaml).get('data-dir')) | default(
+        (host_rke2_config | from_yaml).get('data-dir')) | default('/var/lib/rancher/rke2')
+      }}
