@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     rke2_data_dir: >-
       {{
-        (cluster_rke2_config | from_yaml).get('data-dir') | default(
-        (group_rke2_config | from_yaml).get('data-dir')) | default(
-        (host_rke2_config | from_yaml).get('data-dir')) | default('/var/lib/rancher/rke2')
+        host_rke2_config.get('data-dir') | default(
+        group_rke2_config.get('data-dir'), boolean=True) | default(
+        cluster_rke2_config.get('data-dir'), boolean=True) | default('/var/lib/rancher/rke2', boolean=True)
       }}
