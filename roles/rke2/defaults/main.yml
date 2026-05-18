@@ -74,12 +74,18 @@ rke2_kubernetes_api_server_host: ""
 
 ## Path, local to Ansible control host, where audit policy can be found.
 rke2_audit_policy_config_file_path: ""
+## Inline audit policy content (YAML). When set, takes precedence over rke2_audit_policy_config_file_path.
+rke2_audit_policy_config_file_content: "{% if rke2_audit_policy_config_file_path %}{{ lookup('file', rke2_audit_policy_config_file_path) }}{% endif %}"
 
 ## Path, local to Ansible control host, where registries config can be found.
 rke2_registry_config_file_path: ""
+## Inline registries.yaml content. When set, takes precedence over rke2_registry_config_file_path.
+rke2_registry_config_file_content: "{% if rke2_registry_config_file_path %}{{ lookup('file', rke2_registry_config_file_path) }}{% endif %}"
 
 ## Path, local to Ansible control host, where PSA policy can be found.
 rke2_pod_security_admission_config_file_path: ""
+## Inline PSA policy content (YAML). When set, takes precedence over rke2_pod_security_admission_config_file_path.
+rke2_pod_security_admission_config_file_content: "{% if rke2_pod_security_admission_config_file_path %}{{ lookup('file', rke2_pod_security_admission_config_file_path) }}{% endif %}"
 
 ## Set 'true' if Ansible should automatically add IPTABLES rules to allow for Kubernetes traffic.
 rke2_add_iptables_rules: false
@@ -92,6 +98,8 @@ rke2_manifest_config_post_run_directory: ""
 
 ## Path, local to Ansible control host, where systemd environment file config can be found (Proxy Config).
 rke2_systemd_env_config_file_path: ""
+## Inline systemd environment file content. When set, takes precedence over rke2_systemd_env_config_file_path.
+rke2_systemd_env_config_file_content: "{% if rke2_systemd_env_config_file_path %}{{ lookup('file', rke2_systemd_env_config_file_path) }}{% endif %}"
 
 ## Path, local to Ansible control host, where kube-api-authn-webhook.yaml config can be found (ACE Config).
 ### Warning: You must also set:
@@ -99,6 +107,8 @@ rke2_systemd_env_config_file_path: ""
 ###    kube-apiserver-arg:
 ###      - authentication-token-webhook-config-file=/var/lib/rancher/rke2/kube-api-authn-webhook.yaml
 kube_api_authn_webhook_file_path: ""
+## Inline kube-api-authn-webhook.yaml content. When set, takes precedence over kube_api_authn_webhook_file_path.
+kube_api_authn_webhook_file_content: "{% if kube_api_authn_webhook_file_path %}{{ lookup('file', kube_api_authn_webhook_file_path) }}{% endif %}"
 ## Set to 'false' if Ansible should not attempt to upgrade an installed version of RKE2. This is useful if using the System Upgrade Controller to manage the installed version of RKE2.
 rke2_upgrade: true
 
