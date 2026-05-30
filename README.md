@@ -30,7 +30,7 @@ See the [docs](https://docs.rke2.io/) more information about [RKE Government](ht
 Platforms
 ---------  
 
-[![Lint](https://github.com/rancherfederal/rke2-ansible/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/rancherfederal/rke2-ansible/actions/workflows/lint.yml) [![Rocky](https://github.com/rancherfederal/rke2-ansible/actions/workflows/rocky.yml/badge.svg?branch=main)](https://github.com/rancherfederal/rke2-ansible/actions/workflows/rocky.yml) [![Ubuntu](https://github.com/rancherfederal/rke2-ansible/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/rancherfederal/rke2-ansible/actions/workflows/ubuntu.yml)
+[![Lint](https://github.com/rancherfederal/rke2-ansible/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/rancherfederal/rke2-ansible/actions/workflows/lint.yml) [![Rocky](https://github.com/rancherfederal/rke2-ansible/actions/workflows/rocky.yml/badge.svg?branch=main)](https://github.com/rancherfederal/rke2-ansible/actions/workflows/rocky.yml) [![Ubuntu](https://github.com/rancherfederal/rke2-ansible/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/rancherfederal/rke2-ansible/actions/workflows/ubuntu.yml) [![Ansible Galaxy](https://img.shields.io/badge/Ansible%20Galaxy-rancherfederal.rke2_ansible-blue?logo=ansible&style=flat-square)](https://galaxy.ansible.com/rancherfederal/rke2_ansible)
 
 The RKE2 Ansible playbook supports:
 - Rocky 8, and 9
