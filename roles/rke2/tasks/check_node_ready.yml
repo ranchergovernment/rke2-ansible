@@ -36,6 +36,7 @@
   ansible.builtin.set_fact:
     rke2_metrics_running: true
   when:
+    - node_metrics.status is defined
     - 200 | string in node_metrics.status | string
   tags: ["configure"]
 
@@ -43,6 +44,7 @@
   ansible.builtin.set_fact:
     kubelet_node_name: "{{ node_metrics.content | regex_search('kubelet_node_name{node=\"(.*)\"}', '\\1') }}"
   when:
+    - node_metrics.status is defined
     - 200 | string in node_metrics.status | string
   tags: ["configure"]
 
