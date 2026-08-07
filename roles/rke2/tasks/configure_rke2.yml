@@ -13,7 +13,7 @@
 - name: Include task file add-systemd-env.yml
   ansible.builtin.include_tasks: add_ansible_managed_config.yml
   vars:
-    file_contents: "{{ lookup('file', rke2_systemd_env_config_file_path) }}"
+    file_contents: "{{ lookup('template', rke2_systemd_env_config_file_path) }}"
     file_destination: "/etc/default/{{ service_name }}"
     file_description: "systemd env options"
     file_path: "{{ rke2_systemd_env_config_file_path }}"
@@ -21,7 +21,7 @@
 - name: "Include task file add_ansible_managed_config.yml for {{ file_description }}"
   ansible.builtin.include_tasks: add_ansible_managed_config.yml
   vars:
-    file_contents: "{{ lookup('file', rke2_registry_config_file_path) }}"
+    file_contents: "{{ lookup('template', rke2_registry_config_file_path) }}"
     file_destination: "/etc/rancher/rke2/registries.yaml"
     file_description: "registry configuration"
     file_path: "{{ rke2_registry_config_file_path }}"
@@ -29,7 +29,7 @@
 - name: "Include task file add_ansible_managed_config.yml for {{ file_description }}"
   ansible.builtin.include_tasks: add_ansible_managed_config.yml
   vars:
-    file_contents: "{{ lookup('file', rke2_audit_policy_config_file_path) }}"
+    file_contents: "{{ lookup('template', rke2_audit_policy_config_file_path) }}"
     file_destination: "/etc/rancher/rke2/audit-policy.yaml"
     file_description: "audit policy configuration"
     file_path: "{{ rke2_audit_policy_config_file_path }}"
@@ -39,7 +39,7 @@
 - name: "Include task file add_ansible_managed_config.yml for {{ file_description }}"
   ansible.builtin.include_tasks: add_ansible_managed_config.yml
   vars:
-    file_contents: "{{ lookup('file', rke2_pod_security_admission_config_file_path) }}"
+    file_contents: "{{ lookup('template', rke2_pod_security_admission_config_file_path) }}"
     file_destination: "/etc/rancher/rke2/rke2-pss.yaml"
     file_description: "pod security admission config"
     file_path: "{{ rke2_pod_security_admission_config_file_path }}"
@@ -49,7 +49,7 @@
 - name: "Include task file add_ansible_managed_config.yml for {{ file_description }}"
   ansible.builtin.include_tasks: add_ansible_managed_config.yml
   vars:
-    file_contents: "{{ lookup('file', kube_api_authn_webhook_file_path) }}"
+    file_contents: "{{ lookup('template', kube_api_authn_webhook_file_path) }}"
     file_destination: "{{ rke2_data_dir }}kube-api-authn-webhook.yaml"
     file_description: "authorized cluster endpoint config"
     file_path: "{{ kube_api_authn_webhook_file_path }}"
