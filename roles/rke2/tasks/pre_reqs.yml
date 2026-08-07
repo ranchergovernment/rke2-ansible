@@ -37,7 +37,7 @@
     - ansible_facts.services["fapolicyd.service"].state == "running"
   vars:
     fapolicyd_rules: |
-      allow perm=any all : dir="{{ rke2_data_dir | dirname }}"
+      allow perm=any all : dir={{ rke2_data_dir | dirname }}
       allow perm=any all : dir=/opt/cni/
       allow perm=any all : dir=/run/k3s/
       allow perm=any all : dir=/var/lib/kubelet/
