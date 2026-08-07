@@ -30,7 +30,7 @@
     mode: '0644'
   register: sysctl_operation
   when: >-
-    rke2_config.get('kubelet-arg', []) is iterable 
+    rke2_config.get('kubelet-arg', []) is iterable
     and ('protect-kernel-defaults=true' in rke2_config.get('kubelet-arg', []))
   notify:
     - Restart systemd-sysctl
