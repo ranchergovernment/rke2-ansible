@@ -72,13 +72,13 @@ host_rke2_config: {}
 ## API Address for Cluster if behind Loadbalancer or Virtual IP.
 rke2_kubernetes_api_server_host: ""
 
-## Path, local to Ansible control host, where audit policy can be found.
+## Path, local to Ansible control host, where audit policy can be found. File can be a template.
 rke2_audit_policy_config_file_path: ""
 
-## Path, local to Ansible control host, where registries config can be found.
+## Path, local to Ansible control host, where registries config can be found. File can be a template.
 rke2_registry_config_file_path: ""
 
-## Path, local to Ansible control host, where PSA policy can be found.
+## Path, local to Ansible control host, where PSA policy can be found. File can be a template.
 rke2_pod_security_admission_config_file_path: ""
 
 ## Set 'true' if Ansible should automatically add IPTABLES rules to allow for Kubernetes traffic.
@@ -90,10 +90,10 @@ rke2_manifest_config_directory: ""
 ## Path, local to Ansible control host, where manifests can be found that will be added (to server/manifests directory) and automatically applied after last server is up.
 rke2_manifest_config_post_run_directory: ""
 
-## Path, local to Ansible control host, where systemd environment file config can be found (Proxy Config).
+## Path, local to Ansible control host, where systemd environment file config can be found (Proxy Config). File can be a template.
 rke2_systemd_env_config_file_path: ""
 
-## Path, local to Ansible control host, where kube-api-authn-webhook.yaml config can be found (ACE Config).
+## Path, local to Ansible control host, where kube-api-authn-webhook.yaml config (or template) can be found (ACE Config).
 ### Warning: You must also set:
 ### rke2_config:
 ###    kube-apiserver-arg:
