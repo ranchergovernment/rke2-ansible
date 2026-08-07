@@ -7,12 +7,12 @@
     owner: root
     group: root
   when:
-    - file_path | default("") | length != 0
+    - file_contents is truthy
   notify: "Restart {{ service_name }}"
 
 - name: "Remove {{ file_description }} file"  # noqa name[template]
   when:
-    - file_path | default("") | length == 0
+    - file_contents is falsy
   block:
     - name: "Check that the {{ file_description }} file exists"  # noqa name[template]
       ansible.builtin.stat:

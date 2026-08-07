@@ -198,6 +198,8 @@ all:
 ### Defining a PSA Config  
 In order to define a PSA (Pod Security Admission) config, server nodes will need to have the `rke2_pod_security_admission_config_file_path` variable defined, then the `pod-security-admission-config-file` will need to be defined in the rke2_config variable at the relevant level (please see [RKE Config Variables](#rke2-config-variables)). 
 
+Alternatively, the inline variable `rke2_pod_security_admission_config_file_content` can be used to pass the YAML content directly (useful when the policy is generated dynamically or stored in inventory). When set, it takes precedence over `rke2_pod_security_admission_config_file_path`.
+
 #### Example 
 Below is an example of how this can be defined at the server group level (`rke2_cluster.children.rke2_servers.vars`):  
 
@@ -212,6 +214,8 @@ group_rke2_config:
 
 ### Defining an Audit Policy  
 In order to define a audit policy config, server nodes will need to have the `rke2_audit_policy_config_file_path` variable defined, then the `audit-policy-file` will need to be defined in the rke2_config variable at the relevant level (please see [RKE Config Variables](#rke2-config-variables)). 
+
+Alternatively, the inline variable `rke2_audit_policy_config_file_content` can be used to pass the YAML content directly. When set, it takes precedence over `rke2_audit_policy_config_file_path`.
 
 #### Example 
 Below is an example of how this can be defined at the server group level (`rke2_cluster.children.rke2_servers.vars`):  
@@ -229,6 +233,8 @@ group_rke2_config:
 
 ### Defining a registries.yaml Config
 As seen [here](https://docs.rke2.io/install/private_registry), RKE2 allows for manipulation of how containerd pulls containers. In order to define a registries.yaml config, nodes will need to have the `rke2_registry_config_file_path` variable defined. Assuming all nodes are to use the same registry configuration, this variable can be set at the top-level so that it applies to all nodes.
+
+Alternatively, the inline variable `rke2_registry_config_file_content` can be used to pass the YAML content directly. When set, it takes precedence over `rke2_registry_config_file_path`.
 
 #### Example 
 Below is an example of how this can be defined at the top-level:  
