@@ -6,7 +6,7 @@
     temp_group_rke2_config: "{{ cluster_rke2_config | default({}) | ansible.builtin.combine((group_rke2_config | default({})), list_merge='prepend_rp') }}"
   tags: ["configure"]
 
-# combine previous with host vars to form final rke2_config
+# combine prevrious with host vars to form final rke2_config
 - name: Combine previous config and host config vars
   ansible.builtin.set_fact:
     rke2_config: "{{ temp_group_rke2_config | default({}) | ansible.builtin.combine((host_rke2_config | default({})), list_merge='prepend_rp') }}"
@@ -21,29 +21,3 @@
     mode: "0600"
   notify: Restart {{ service_name }}
   tags: ["configure"]
-
-- name: Copy systemctl file for kernel hardening
-  ansible.builtin.copy:
-    src: "{{ (install_method == 'rpm') | ternary('/usr/share/rke2/rke2-cis-sysctl.conf', rke2_tarball_install_dir + '/share/rke2/rke2-cis-sysctl.conf') }}"
-    dest: /etc/sysctl.d/60-rke2-cis.conf
-    remote_src: true
-    mode: '0644'
-  register: sysctl_operation
-  when: >-
-    rke2_config.get('kubelet-arg', []) is iterable
-    and ('protect-kernel-defaults=true' in rke2_config.get('kubelet-arg', []))
-  notify:
-    - Restart systemd-sysctl
-    - "Restart {{ service_name }}"
-    - Reboot the machine
-
-# Per CIS hardening guide, if Kubernetes is already running, making changes to sysctl can result in unexpected
-# side-effects. Rebooting node if RKE2 is already running to prevent potential issues whereas before we were
-# always rebooting, even if the node was brand new and RKE2 not running yet.
-- name: Reboot the machine (Wait for 5 min)
-  ansible.builtin.set_fact:
-    rke2_reboot: true
-  when:
-    - sysctl_operation.changed
-    - rke2_running is defined
-    - rke2_running
