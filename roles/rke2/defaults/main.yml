@@ -108,6 +108,10 @@ rke2_agent_service_restart_throttle: 1
 ## Various CNIs and RKE2 both recommend disabling firewalld. Set to true if you want this playbook to leave the state of firewalld untouched.
 rke2_ignore_firewalld: false
 
+
+## Clean/Delete created .repo files in /etc/yum.repos.d/
+rke2_clean_repos: false
+
 # Should not be changed:
 rke2_metrics_running: false
 rke2_node_ready: "false"
