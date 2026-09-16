@@ -1,0 +1,15 @@
+---
+name: SLES
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  "_15sp7_":
+    uses: ./.github/workflows/reusable_integration_testing.yml
+    with:
+      os: sles15
+      ssh_user: sles
+    secrets: inherit
