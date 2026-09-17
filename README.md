@@ -36,6 +36,10 @@ The RKE2 Ansible playbook supports:
 - Rocky 8, and 9
 - RedHat: 8, and 9
 - Ubuntu: 22, and 24
+- SLE Micro 6 (experimental, see caveat below)
+
+> [!WARNING]  
+> Support for SLE Micro 6 is experimental. The SELinux profile is not activated/enforced on this platform.
 
 
 System requirements

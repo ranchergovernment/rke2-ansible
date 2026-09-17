@@ -43,3 +43,47 @@
       allow perm=any all : dir=/var/lib/kubelet/
   notify: Restart fapolicyd
   tags: ["setup-os"]
+
+# Kubernetes/RKE2 requires swap disabled, the overlay/br_netfilter kernel
+# modules loaded, and bridged-traffic sysctls enabled. Rocky/RHEL/Ubuntu cloud
+# images already satisfy this; SUSE (e.g. SLE Micro) does not, so this is
+# scoped to that OS family only to avoid changing behavior for other users.
+- name: SUSE-specific kernel/network prerequisites
+  when: ansible_facts['os_family'] == 'Suse'
+  tags: ["setup-os"]
+  block:
+    - name: Disable swap for the current session
+      ansible.builtin.command: swapoff -a
+      when: ansible_facts.swaptotal_mb | default(0) > 0
+      changed_when: true
+
+    - name: Disable swap entries in /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#\n].*\sswap\s.*)$'
+        replace: '# \1'
+
+    - name: Load kernel modules required by RKE2
+      ansible.builtin.command: "modprobe {{ item }}"
+      loop:
+        - overlay
+        - br_netfilter
+      changed_when: false
+
+    - name: Persist required kernel modules across reboots
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/rke2.conf
+        content: |
+          overlay
+          br_netfilter
+        mode: '0644'
+
+    - name: Set sysctl parameters required by RKE2 networking
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/90-rke2-networking.conf
+        content: |
+          net.bridge.bridge-nf-call-iptables = 1
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.ipv4.ip_forward = 1
+        mode: '0644'
+      notify: Restart systemd-sysctl

@@ -1,3 +1,36 @@
 ---
+# Ansible gathers facts (which requires Python) before any role tasks run, so
+# bootstrapping Python on Python-less images (e.g. SLE Micro / immutable
+# transactional-update hosts) has to happen in its own fact-less play, ahead
+# of the main install play.
+- name: Bootstrap Python3 on Python-less hosts
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Check if python3 is already present
+      ansible.builtin.raw: command -v python3 || true
+      register: rke2_python_check
+      changed_when: false
+
+    - name: Detect transactional-update tooling (SUSE MicroOS / SLE Micro)
+      ansible.builtin.raw: command -v transactional-update || true
+      register: rke2_transactional_update_check
+      changed_when: false
+      when: rke2_python_check.stdout | trim == ""
+
+    - name: Install python3 via transactional-update
+      ansible.builtin.raw: transactional-update pkg install -y python3
+      when:
+        - rke2_python_check.stdout | trim == ""
+        - rke2_transactional_update_check.stdout | trim != ""
+      changed_when: true
+      notify: Reboot after python3 bootstrap
+
+  handlers:
+    - name: Reboot after python3 bootstrap
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+
 - name: RKE2 play
   import_playbook: ./playbooks/install.yml
