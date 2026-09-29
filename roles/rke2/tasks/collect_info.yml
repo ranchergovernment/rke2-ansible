@@ -30,7 +30,7 @@
 
 - name: Set for install method of zypper
   ansible.builtin.set_fact:
-    install_method: zypper 
+    install_method: zypper
   when:
     - ansible_os_family == 'Suse'
     - rke2_install_local_tarball_path == ""
