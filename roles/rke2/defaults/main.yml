@@ -31,6 +31,27 @@ rke2_versioned_yum_repo:
   gpgkey: "https://rpm.rancher.io/public.key"
   enabled: true
 
+### Common Zypper repo
+### SLES 16 uses the SLE Micro repo as well so we there is no need to define additional repos here for SLES
+### Documentation: https://documentation.suse.com/cloudnative/rke2/latest/en/install/methods.html
+rke2_common_zypper_repo:
+  name: rancher-rke2-common
+  description: "Rancher RKE2 Common Latest"
+  baseurl: "baseurl=https://rpm.rancher.io/rke2/{{ rke2_channel }}/common/slemicro/noarch"
+  gpgcheck: true
+  gpgkey: "https://rpm.rancher.io/public.key"
+  enabled: true
+
+### Versioned Zypper repo
+### Same as above, this works for both SLE Micro and SLES
+rke2_versioned_zypper_repo:
+  name: rancher-rke2-common
+  description: "Rancher RKE2 v{{ rke2_version_majmin }}"
+  baseurl: "baseurl=https://rpm.rancher.io/rke2/{{ rke2_channel }}/{{ rke2_version_majmin }}/slemicro/x86_64"
+  gpgcheck: true
+  gpgkey: "https://rpm.rancher.io/public.key"
+  enabled: true
+
 ### Path to directory local to Ansible Control Host that contains RPMS for rke2-server and/or rke2-agent, rke2-common, and optionally rke2-selinux.
 ### Additional RPMs in this folder will be installed as well.
 rke2_rpms_path: ""

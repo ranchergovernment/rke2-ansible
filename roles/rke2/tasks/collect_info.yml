@@ -28,6 +28,16 @@
     - not rke2_force_tarball_install|bool
   tags: ["cis", "setup-os"]
 
+- name: Set for install method of zypper
+  ansible.builtin.set_fact:
+    install_method: zypper 
+  when:
+    - ansible_os_family == 'Suse'
+    - rke2_install_local_tarball_path == ""
+    - rke2_install_tarball_url == ""
+    - not rke2_force_tarball_install|bool
+  tags: ["cis", "setup-os"]
+
 - name: Set as server
   ansible.builtin.set_fact:
     service_name: rke2-server
