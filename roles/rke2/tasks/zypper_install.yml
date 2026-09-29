@@ -38,17 +38,17 @@
     # SLES
     # WIP: Logic will need more complexity for Agents and Servers but this is good enough for testing:
     - name: Zypper-based Install
-      ansible.builtin.command: "zypper --gpg-auto-import-keys install -y rke2-server"
       when:
         - ansible_distribution == 'SLES'
+      ansible.builtin.command: "zypper --gpg-auto-import-keys install -y rke2-server"
 
     # SLE Micro
     - name: Transactional Zypper Install
+      when:
+        - ansible_distribution == 'SLE Micro'
       block:
         - name: Run transactional-update cmd
           ansible.builtin.command: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
         - name: Transactional Update requires a reboot 
           ansible.builtin.set_fact:
             rke2_reboot: true
-      when:
-        - ansible_distribution == 'SLE Micro'
