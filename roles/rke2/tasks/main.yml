@@ -77,6 +77,10 @@
       ansible.builtin.include_tasks: zypper_install.yml
       when:
         - install_method == "zypper"
+    - name: Transactional Install on SLE Micro
+      ansible.builtin.include_tasks: transactional_install.yml
+      when:
+        - install_method == "transactional"
 
 - name: Set rke2 configuration files
   ansible.builtin.include_tasks: configure_rke2.yml

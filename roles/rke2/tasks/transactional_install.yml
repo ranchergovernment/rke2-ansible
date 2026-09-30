@@ -35,7 +35,14 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
-    # SLES
-    # WIP: Logic will need more complexity for Agents and Servers but this is good enough for testing:
-    - name: Zypper-based Install
-      ansible.builtin.shell: "zypper --gpg-auto-import-keys install -y rke2-server"
+    # SLE Micro
+    # WIP: We will need to acct for Agents and Servers
+    - name: Transactional Zypper Install
+      when:
+        - ansible_distribution == 'SL-Micro'
+      block:
+        - name: Run transactional-update cmd
+          ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
+        - name: Transactional Update requires a reboot
+          ansible.builtin.set_fact:
+            rke2_reboot: true
