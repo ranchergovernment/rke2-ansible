@@ -12,11 +12,11 @@
       when: rke2_install_version | length > 0
 
     # Add RKE2 common zypper repo
-    # We pass repodir here to change where the ansible.builtin.yum_repository function puts the repo file
+    # We pass reposdir here to change where the ansible.builtin.yum_repository function puts the repo file
     # Documentation: https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/yum_repository_module.html
     - name: Add the rke2-common repo for SLE Micro/SLES
       ansible.builtin.yum_repository:
-        repodir: "/etc/zypp/repos.d/"
+        reposdir: "/etc/zypp/repos.d/"
         name: "{{ rke2_common_zypper_repo.name }}"
         description: "{{ rke2_common_zypper_repo.description }}"
         baseurl: "{{ rke2_common_zypper_repo.baseurl }}"
@@ -27,7 +27,7 @@
     # Add RKE2 versioned zypper repo
     - name: Add the rke2-common repo for SLE Micro/SLES
       ansible.builtin.yum_repository:
-        repodir: "/etc/zypp/repos.d/"
+        reposdir: "/etc/zypp/repos.d/"
         name: "{{ rke2_versioned_zypper_repo.name }}"
         description: "{{ rke2_versioned_zypper_repo.description }}"
         baseurl: "{{ rke2_versioned_zypper_repo.baseurl }}"
