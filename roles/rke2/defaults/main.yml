@@ -37,7 +37,7 @@ rke2_versioned_yum_repo:
 rke2_common_zypper_repo:
   name: rancher-rke2-common
   description: "Rancher RKE2 Common Latest"
-  baseurl: "baseurl=https://rpm.rancher.io/rke2/{{ rke2_channel }}/common/slemicro/noarch"
+  baseurl: "https://rpm.rancher.io/rke2/{{ rke2_channel }}/common/slemicro/noarch"
   gpgcheck: true
   gpgkey: "https://rpm.rancher.io/public.key"
   enabled: true
@@ -47,7 +47,7 @@ rke2_common_zypper_repo:
 rke2_versioned_zypper_repo:
   name: rancher-rke2-common
   description: "Rancher RKE2 v{{ rke2_version_majmin }}"
-  baseurl: "baseurl=https://rpm.rancher.io/rke2/{{ rke2_channel }}/{{ rke2_version_majmin }}/slemicro/x86_64"
+  baseurl: "https://rpm.rancher.io/rke2/{{ rke2_channel }}/{{ rke2_version_majmin }}/slemicro/x86_64"
   gpgcheck: true
   gpgkey: "https://rpm.rancher.io/public.key"
   enabled: true
