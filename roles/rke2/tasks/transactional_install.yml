@@ -48,5 +48,7 @@
         - name: Run transactional-update cmd
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
         - name: Transactional Update requires a reboot
-          ansible.builtin.set_fact:
-            rke2_reboot: true
+          ansible.builtin.reboot:
+            post_reboot_delay: 30
+            reboot_timeout: 600
+            msg: "Transactional update requires immediate reboot, rebooting {{ ansible_hostname }}..."
