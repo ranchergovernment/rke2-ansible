@@ -28,7 +28,7 @@
     - not rke2_force_tarball_install|bool
   tags: ["cis", "setup-os"]
 
-- name: Set for install method of zypper for SLES
+- name: Set for install method of zypper
   ansible.builtin.set_fact:
     install_method: zypper
   when:
@@ -39,7 +39,7 @@
     - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
 
-- name: Set for install method of zypper
+- name: Set for install method of transactional
   ansible.builtin.set_fact:
     install_method: transactional
   when:

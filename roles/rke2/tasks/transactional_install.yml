@@ -35,6 +35,10 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
+    # WIP: We may get to remove this later but for the moment I am having to do perform this action for it to see the rke2-selinux RPM
+    - name: Force zypper repo update
+      ansible.builtin.shell: "zypper --gpg-auto-import-keys ref"
+
     # SLE Micro
     # WIP: We will need to acct for Agents and Servers
     - name: Transactional Zypper Install

@@ -36,7 +36,7 @@ rke2_versioned_yum_repo:
 ### Documentation: https://documentation.suse.com/cloudnative/rke2/latest/en/install/methods.html
 rke2_common_zypper_repo:
   name: rancher-rke2-common
-  description: "Rancher RKE2 Common Latest"
+  description: "Rancher RKE2 Common {{ rke2_channel }}"
   baseurl: "https://rpm.rancher.io/rke2/{{ rke2_channel }}/common/slemicro/noarch"
   gpgcheck: true
   gpgkey: "https://rpm.rancher.io/public.key"
@@ -45,7 +45,7 @@ rke2_common_zypper_repo:
 ### Versioned Zypper repo
 ### Same as above, this works for both SLE Micro and SLES
 rke2_versioned_zypper_repo:
-  name: rancher-rke2-common
+  name: "rancher-rke2-v{{ rke2_version_majmin }}" 
   description: "Rancher RKE2 v{{ rke2_version_majmin }}"
   baseurl: "https://rpm.rancher.io/rke2/{{ rke2_channel }}/{{ rke2_version_majmin }}/slemicro/x86_64"
   gpgcheck: true
