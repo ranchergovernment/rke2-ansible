@@ -12,7 +12,7 @@
   ansible.builtin.set_fact:
     install_method: tarball
   when: |-
-      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky') or
+      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky' or ansible_os_family == 'Suse' and rke2_use_slem_rpms == false) or
       rke2_install_tarball_url != "" or
       rke2_install_local_tarball_path != "" or
       rke2_force_tarball_install|bool)
@@ -26,6 +26,28 @@
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
     - not rke2_force_tarball_install|bool
+  tags: ["cis", "setup-os"]
+
+- name: Set for install method of zypper
+  ansible.builtin.set_fact:
+    install_method: zypper
+  when:
+    - ansible_os_family == 'Suse'
+    - ansible_distribution == 'SLES'
+    - rke2_use_slem_rpms == true
+    - rke2_install_local_tarball_path == ""
+    - rke2_install_tarball_url == ""
+  tags: ["cis", "setup-os"]
+
+- name: Set for install method of transactional
+  ansible.builtin.set_fact:
+    install_method: transactional
+  when:
+    - ansible_os_family == 'Suse'
+    - ansible_distribution == 'SL-Micro'
+    - rke2_use_slem_rpms == true
+    - rke2_install_local_tarball_path == ""
+    - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
 
 - name: Set as server

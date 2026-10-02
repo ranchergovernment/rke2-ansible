@@ -1,0 +1,54 @@
+---
+- name: Install all from remote web server
+  when: rke2_rpms_path | length == 0
+  block:
+    - name: Set Maj.Min version
+      ansible.builtin.set_fact:
+        rke2_version_majmin: "{{ rke2_install_version | ansible.builtin.regex_replace('^v?(\\d+\\.\\d+).*', '\\1') }}"
+
+    - name: Set RPM version
+      ansible.builtin.set_fact:
+        rke2_version_rpm: "-{{ rke2_install_version | regex_replace('[+-]', '~', 'g') | regex_replace('^v(.*)', '\\1') }}"
+      when: rke2_install_version | length > 0
+
+    # Add RKE2 common zypper repo
+    # We pass reposdir here to change where the ansible.builtin.yum_repository function puts the repo file
+    # Documentation: https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/yum_repository_module.html
+    - name: Add the rke2-common repo for SLE Micro/SLES
+      ansible.builtin.yum_repository:
+        reposdir: "/etc/zypp/repos.d/"
+        name: "{{ rke2_common_zypper_repo.name }}"
+        description: "{{ rke2_common_zypper_repo.description }}"
+        baseurl: "{{ rke2_common_zypper_repo.baseurl }}"
+        gpgcheck: "{{ rke2_common_zypper_repo.gpgcheck }}"
+        gpgkey: "{{ rke2_common_zypper_repo.gpgkey }}"
+        enabled: "{{ rke2_common_zypper_repo.enabled }}"
+
+    # Add RKE2 versioned zypper repo
+    - name: Add the rke2-common repo for SLE Micro/SLES
+      ansible.builtin.yum_repository:
+        reposdir: "/etc/zypp/repos.d/"
+        name: "{{ rke2_versioned_zypper_repo.name }}"
+        description: "{{ rke2_versioned_zypper_repo.description }}"
+        baseurl: "{{ rke2_versioned_zypper_repo.baseurl }}"
+        gpgcheck: "{{ rke2_versioned_zypper_repo.gpgcheck }}"
+        gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
+        enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
+
+    # WIP: We may get to remove this later but for the moment I am having to do perform this action for it to see the rke2-selinux RPM
+    - name: Force zypper repo update
+      ansible.builtin.shell: "zypper --gpg-auto-import-keys ref"
+
+    # SLE Micro
+    # WIP: We will need to acct for Agents and Servers
+    - name: Transactional Zypper Install
+      when:
+        - ansible_distribution == 'SL-Micro'
+      block:
+        - name: Run transactional-update cmd
+          ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
+        - name: Transactional Update requires a reboot
+          ansible.builtin.reboot:
+            post_reboot_delay: 30
+            reboot_timeout: 600
+            msg: "Transactional update requires immediate reboot, rebooting {{ ansible_hostname }}..."
