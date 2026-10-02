@@ -12,7 +12,7 @@
   ansible.builtin.set_fact:
     install_method: tarball
   when: |-
-      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky' or ansible_os_family != 'Suse' and ansible_distribution == 'SL-Micro' and rke2_use_slem_rpms == false) or
+      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky' or ansible_os_family == 'Suse' and rke2_use_slem_rpms == false) or
       rke2_install_tarball_url != "" or
       rke2_install_local_tarball_path != "" or
       rke2_force_tarball_install|bool)
@@ -33,8 +33,8 @@
     install_method: zypper
   when:
     - ansible_os_family == 'Suse'
-    - ansible_distribution == 'SLES' # This check could be done a few ways, it requires some testing. Hopefully we can just check the distro name
-#    - ansible_distribution != 'SL-Micro'
+    - ansible_distribution == 'SLES'
+    - rke2_use_slem_rpms == true
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
