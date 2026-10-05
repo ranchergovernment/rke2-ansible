@@ -1,0 +1,35 @@
+---
+rke2_use_slem_rpms: true
+
+rke2_pod_security_admission_config_file_path: "{{ inventory_dir }}/manifests/pod-security-admission-config.yaml"
+rke2_audit_policy_config_file_path: "{{ inventory_dir }}/manifests/audit-policy.yaml"
+
+cluster_rke2_config:
+  selinux: true
+  secrets-encryption: true
+  write-kubeconfig-mode: "0640"
+  profile: "cis"
+  ingress-controller: "traefik"
+  pod-security-admission-config-file: "/etc/rancher/rke2/rke2-pss.yaml"
+  kubelet-arg:
+    - "protect-kernel-defaults=true"
+    - "read-only-port=0"
+    - "authorization-mode=Webhook"
+    - "streaming-connection-idle-timeout=5m"
+  kube-controller-manager-arg:
+    - "bind-address=127.0.0.1"
+    - "use-service-account-credentials=true"
+    - "tls-min-version=VersionTLS12"
+    - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+  kube-scheduler-arg: 
+    - "tls-min-version=VersionTLS12"
+    - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+  kube-apiserver-arg: 
+    - "tls-min-version=VersionTLS12"
+    - "tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+    - "authorization-mode=RBAC,Node"
+    - "anonymous-auth=false"
+    - "audit-log-mode=blocking-strict"
+    - "audit-log-maxage=30"
+    - "admission-control-config-file=/etc/rancher/rke2/rke2-pss.yaml"
+  ingress-controller: "traefik"
