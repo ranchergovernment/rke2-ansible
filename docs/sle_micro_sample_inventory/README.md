@@ -60,6 +60,3 @@ The installation location of the *tarball* and *RPM methods* are different. The 
 
 The *RPM installation method* installs RKE2 in `/var/lib/rancher/rke2`.
 
-## The CIS Configured Example
-
-The example in here contains the necessary components to fully enable RKE2's CIS profile. This is intended to be an example, not a one-size fits most CIS-enabled RKE2 example you can plug and play anywhere.
