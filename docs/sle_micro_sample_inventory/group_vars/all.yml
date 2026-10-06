@@ -1,0 +1,7 @@
+---
+rke2_use_slem_rpms: true
+
+cluster_rke2_config:
+  selinux: true
+  secrets-encryption: true
+  ingress-controller: "traefik"
