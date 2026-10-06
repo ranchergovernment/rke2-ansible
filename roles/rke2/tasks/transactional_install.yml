@@ -35,18 +35,32 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
-    # WIP: We may get to remove this later but for the moment I am having to do perform this action for it to see the rke2-selinux RPM
+    # WIP: Testing this... 
     - name: Force zypper repo update
       ansible.builtin.shell: "zypper --gpg-auto-import-keys ref"
 
     # SLE Micro
-    # WIP: We will need to acct for Agents and Servers
+    # WIP: Detect servers and agents
     - name: Transactional Zypper Install
       when:
         - ansible_distribution == 'SL-Micro'
+        - inventory_hostname in groups['rke2_servers']
       block:
         - name: Run transactional-update cmd
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
+        - name: Transactional Update requires a reboot
+          ansible.builtin.reboot:
+            post_reboot_delay: 30
+            reboot_timeout: 600
+            msg: "Transactional update requires immediate reboot, rebooting {{ ansible_hostname }}..."
+
+    - name: Transactional Zypper Install
+      when:
+        - ansible_distribution == 'SL-Micro'
+        - inventory_hostname in groups['rke2_agents']
+      block:
+        - name: Run transactional-update cmd
+          ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
         - name: Transactional Update requires a reboot
           ansible.builtin.reboot:
             post_reboot_delay: 30

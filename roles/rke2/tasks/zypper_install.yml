@@ -35,7 +35,11 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
-    # SLES
-    # WIP: Logic will need more complexity for Agents and Servers but this is good enough for testing:
+    # WIP: Detect agents vs servers
     - name: Zypper-based Install
+      when: inventory_hostname in groups['rke2_servers']
       ansible.builtin.shell: "zypper --gpg-auto-import-keys install -y rke2-server"
+
+    - name: Zypper-based Install
+      when: inventory_hostname in groups['rke2_agents']
+      ansible.builtin.shell: "zypper --gpg-auto-import-keys install -y rke2-agent"
