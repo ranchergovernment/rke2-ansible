@@ -40,10 +40,9 @@
       ansible.builtin.shell: "zypper --gpg-auto-import-keys ref"
 
     # SLE Micro
-    # WIP: Detect servers and agents
-    - name: Transactional Zypper Install
+    # WIP:  Stil testing...
+    - name: Transactional Zypper Install of rke2-server on server nodes
       when:
-        - ansible_distribution == 'SL-Micro'
         - inventory_hostname in groups['rke2_servers']
       block:
         - name: Run transactional-update cmd
@@ -54,10 +53,10 @@
             reboot_timeout: 600
             msg: "Transactional update requires immediate reboot, rebooting {{ ansible_hostname }}..."
 
-    - name: Transactional Zypper Install
+    - name: Transactional Zypper Install of rke2-agent on agent nodes
       when:
-        - ansible_distribution == 'SL-Micro'
-        - inventory_hostname in groups['rke2_agents']
+        - inventory_hostname in groups.get('rke2_agents', [])
+#        - inventory_hostname in groups['rke2_agents']
       block:
         - name: Run transactional-update cmd
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
