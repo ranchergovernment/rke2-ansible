@@ -5,7 +5,7 @@ This directory demonstrates a simplified inventory for launching RKE2 instances 
 ## Requirements
 
 * SLE Micro 6 - Older versions of SLE Micro do not play nicely with this playbook. 
-* Ansible 2+
+* Ansible 2.20+ - Older versions may or may not work. For example, we did encounter issues with 2.14 provided by Alma 9.
 
 ## The Default Behavior
 
