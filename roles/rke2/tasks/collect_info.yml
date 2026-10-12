@@ -28,6 +28,16 @@
     - not rke2_force_tarball_install|bool
   tags: ["cis", "setup-os"]
 
+- name: Check for the existence of transactional-update
+  ansible.builtin.command: command -v transactional-update
+  register: tu_check
+  changed_when: false
+  failed_when: false
+
+- name: Set fact for transactional-update
+  ansible.builtin.set_fact:
+    transactional_update_present: "{{ tu_check.rc == 0 }}"
+
 - name: Set for install method of zypper
   ansible.builtin.set_fact:
     install_method: zypper
@@ -35,6 +45,7 @@
     - ansible_os_family == 'Suse'
     - ansible_distribution == 'SLES'
     - rke2_use_slem_rpms == true
+    - transactional_update_present == false
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
@@ -44,7 +55,8 @@
     install_method: transactional
   when:
     - ansible_os_family == 'Suse'
-    - ansible_distribution == 'SL-Micro'
+    - ansible_distribution == 'SL-Micro' or ansible_distribution == 'SLES'
+    - transactional_update_present == true
     - rke2_use_slem_rpms == true
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
