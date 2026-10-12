@@ -29,7 +29,7 @@
   tags: ["cis", "setup-os"]
 
 - name: Check for the existence of transactional-update
-  ansible.builtin.command: command -v transactional-update
+  ansible.builtin.shell: command -v transactional-update
   register: tu_check
   changed_when: false
   failed_when: false
