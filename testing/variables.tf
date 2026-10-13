@@ -56,8 +56,15 @@ variable "amis" {
         user = "ubuntu"
       }
       "sles15" = {
-        ami  = "ami-0371c70ae504994fd"
-        user = "ec2-user"
+        # WIP: This is SLES SP7. Needs testing...
+        ami  = "ami-01de4781572fa1285"
+        #        ami  = "ami-0371c70ae504994fd"
+        user = "sles"
+      }
+      "slem6" = {
+        # WIP: This AMI ID is valid but its not available without subscription. Working out a solution...
+        ami  = "ami-01f988ce7e5a84929"
+        user = "sles"
       }
     }
   }

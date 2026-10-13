@@ -1,0 +1,15 @@
+---
+name: SLE-Micro
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  "_6_":
+    uses: ./.github/workflows/reusable_integration_testing.yml
+    with:
+      os: slem6
+      ssh_user: sles
+    secrets: inherit
