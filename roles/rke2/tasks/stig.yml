@@ -1,188 +1,200 @@
 ---
+# =====================================================================
+# RKE2 File System Permissions & Hardening (STIG Compliance)
+# =====================================================================
 
-# Complies with V-254564/CNTR-R2-000520
-
-# #1
-- name: Find all files in /etc/rancher/rke2
+# 1. /etc/rancher/rke2 files (root:root, 0600)
+- name: Find /etc/rancher/rke2 contents
   ansible.builtin.find:
-    paths: /etc/rancher/rke2
+    paths: "/etc/rancher/rke2"
     file_type: file
-  register: found_files
+  register: found_err_files
   tags: ["stig"]
 
-- name: Set permissions
+- name: Find /etc/rancher/rke2 contents
   ansible.builtin.file:
     path: "{{ item.path }}"
+    owner: root
+    group: root
     mode: '0600'
-  loop: "{{ found_files.files }}"
+  loop: "{{ found_err_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
   tags: ["stig"]
 
-# #3
-- name: Find .kubeconfig files
+# 3. /var/lib/rancher/rke2/agent subcomponents (Kubeconfigs, Certs, Keys, Dirs)
+- name: Set 0700 on specific agent directories
+  ansible.builtin.file:
+    path: "{{ rke2_data_dir }}/agent/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  loop:
+    - pod-manifests
+    - etc
+  failed_when: false
+  loop_control:
+    label: "{{ item }}"
+  tags: ["stig"]
+
+- name: Find agent .kubeconfig files (0640)
   ansible.builtin.find:
     paths: "{{ rke2_data_dir }}/agent"
-    patterns: "{{ kubeconfig_files }}"
+    patterns: "*.kubeconfig"
     file_type: file
-  register: found_kubeconfig_files
+    depth: 1
+  register: found_kubeconfigs
   tags: ["stig"]
 
-- name: Apply 0640 to existing .kubeconfig files
+- name: Secure agent .kubeconfig files (0640)
   ansible.builtin.file:
     path: "{{ item.path }}"
     owner: root
     group: root
     mode: '0640'
-  loop: "{{ found_kubeconfig_files.files }}"
+  loop: "{{ found_kubeconfigs.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
   tags: ["stig"]
 
-- name: Find .cert files
+- name: Find agent .crt files (0600)
   ansible.builtin.find:
     paths: "{{ rke2_data_dir }}/agent"
-    patterns: "{{ cert_files }}"
+    patterns: "*.crt"
     file_type: file
-  register: found_cert_files
+    depth: 1
+  register: found_certs
   tags: ["stig"]
 
-- name: Apply 0600 to .cert files
+- name: Secure agent .crt files (0600)
   ansible.builtin.file:
     path: "{{ item.path }}"
     owner: root
     group: root
     mode: '0600'
-  loop: "{{ found_cert_files.files }}"
+  loop: "{{ found_certs.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
   tags: ["stig"]
 
-- name: Find .key files
+- name: Find agent .key files (0600)
   ansible.builtin.find:
     paths: "{{ rke2_data_dir }}/agent"
-    patterns: "{{ key_files }}"
+    patterns: "*.key"
     file_type: file
-  register: found_key_files
+    depth: 1
+  register: found_keys
   tags: ["stig"]
 
-- name: Apply 0600 to .key files
+- name: Secure agent .key files (0600)
   ansible.builtin.file:
     path: "{{ item.path }}"
     owner: root
     group: root
     mode: '0600'
-  loop: "{{ found_key_files.files }}"
+  loop: "{{ found_keys.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
   tags: ["stig"]
 
-- name: Find agent subdirectories
-  ansible.builtin.find:
-    paths: "{{ rke2_data_dir }}/agent"
-    patterns: "{{ agent_dirs }}"
-    file_type: directory
-  register: found_agent_dirs
-  tags: ["stig"]
+# 4. Verify correct permissions of the files in /var/lib/rancher/rke2/bin (root:root, 0750)
 
-- name: Apply 0700 to agent subdirectories
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    owner: root
-    group: root
-    mode: '0700'
-    state: directory
-  loop: "{{ found_agent_dirs.files }}"
-  tags: ["stig"]
-
-# #4
-- name: "Find all existing files in bin directory of {{ rke2_data_dir }}"
+- name: Find files inside rke2/bin
   ansible.builtin.find:
     paths: "{{ rke2_data_dir }}/bin"
     file_type: file
   register: bin_files
   tags: ["stig"]
 
-- name: Set permissions to 0750 on existing files
+- name: Secure files inside rke2/bin
   ansible.builtin.file:
     path: "{{ item.path }}"
-    mode: '0750'
-  loop: "{{ bin_files.files }}"
-  tags: ["stig"]
-
-# #5
-- name: Stat the data directory
-  ansible.builtin.stat:
-    path: "{{ rke2_data_dir }}/data"
-  register: data_dir_stat
-  tags: ["stig"]
-
-- name: Fix permissions and ownership of data directory
-  ansible.builtin.file:
-    path: "{{ rke2_data_dir }}/data"
-    state: directory
     owner: root
     group: root
     mode: '0750'
-  when: data_dir_stat.stat.exists
+  loop: "{{ bin_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
   tags: ["stig"]
 
-# #6 - Broken Check
-# - name: Find all regular files in "{{ rke2_data_dir }}/data"
-#   ansible.builtin.find:
-#     paths: "{{ rke2_data_dir }}/data"
-#     file_type: file
-#     recurse: yes
-#   register: data_files
-# - name: Set ownership and permissions to 0640 on each file
-#   ansible.builtin.file:
-#     path: "{{ item.path }}"
-#     owner: root
-#     group: root
-#     mode: '0640'
-#   loop: "{{ data_files.files }}"
-
-
-# #7
-- name: Find existing 0700 server directories
+# 5. Verify correct permissions of all directories in /var/lib/rancher/rke2/ (root:root, 0750)
+- name: Find all directories recursively in rke2/data
   ansible.builtin.find:
-    paths: "{{ rke2_data_dir }}/server"
-    patterns: "{{ server_dirs_0700 }}"
+    paths: "{{ rke2_data_dir }}/data"
     file_type: directory
-  register: found_server_dirs_0700
+  register: rke2_data_dirs
   tags: ["stig"]
 
-- name: Set permissions to 0700 on server dirs
+- name: Apply 0750 to all rke2/ directories
   ansible.builtin.file:
     path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: '0750'
+  loop: "{{ rke2_data_dirs.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  tags: ["stig"]
+
+# 6. Verify correct permissions of all files in /var/lib/rancher/rke2/data (root:root, 0750)
+- name: Find all files recursively in rke2/data
+  ansible.builtin.find:
+    paths: "{{ rke2_data_dir }}/data"
+    file_type: file
+    recurse: true
+  register: rke2_data_files
+  tags: ["stig"]
+
+- name: Apply 750 to all rke2/data files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: '0750'
+  loop: "{{ rke2_data_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  tags: ["stig"]
+
+# 7. Fix permissions in /var/lib/rancher/rke2/server (Server Only)
+- name: Set root ownership on items directly inside server directory
+  ansible.builtin.file:
+    path: "{{ rke2_data_dir }}/server"
+    owner: root
+    group: root
+  when: service_name == 'rke2-server'
+  tags: ["stig"]
+
+- name: Set 0700 on server cred, db, and tls directories
+  ansible.builtin.file:
+    path: "{{ rke2_data_dir }}/server/{{ item }}"
+    state: directory
     owner: root
     group: root
     mode: '0700'
-    state: directory
-  loop: "{{ found_server_dirs_0700.files }}"
+  loop:
+    - cred
+    - db
+    - tls
+  when: service_name == 'rke2-server'
+  failed_when: false
+  loop_control:
+    label: "{{ item }}"
   tags: ["stig"]
 
-- name: Find existing 0750 server directories
-  ansible.builtin.find:
-    paths: "{{ rke2_data_dir }}/server"
-    patterns: "{{ server_dirs_0750 }}"
-    file_type: directory
-  register: found_server_dirs_0750
-  tags: ["stig"]
-
-- name: Set permissions to 0750 on server dirs
+- name: Set 0750 on server manifests and logs directories
   ansible.builtin.file:
-    path: "{{ item.path }}"
+    path: "{{ rke2_data_dir }}/server/{{ item }}"
+    state: directory
     owner: root
     group: root
     mode: '0750'
-    state: directory
-  loop: "{{ found_server_dirs_0750.files }}"
-  tags: ["stig"]
-
-- name: Check if token file exists
-  ansible.builtin.stat:
-    path: "{{ rke2_data_dir }}/server/token"
-  register: stat_token_file
-  tags: ["stig"]
-
-- name: Set 0600 on token file (if it exists)
-  ansible.builtin.file:
-    path: "{{ rke2_data_dir }}/server/token"
-    owner: root
-    group: root
-    mode: '0600'
-  when: stat_token_file.stat.exists
+  loop:
+    - manifests
+    - logs
+  when: service_name == 'rke2-server'
+  failed_when: false
+  loop_control:
+    label: "{{ item }}"
   tags: ["stig"]
