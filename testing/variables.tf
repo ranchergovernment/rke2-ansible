@@ -23,12 +23,16 @@ variable "instance_type" {
 }
 
 # OS Options
-#  rocky8
 #  rocky9
+#  rocky10
+#  slem6
+#  sles16
+#  ubuntu22
+#  ubuntu24
 variable "os" {
   type        = string
   description = "AWS AMI OS"
-  default     = "rocky8"
+  default     = "rocky9"
 }
 
 variable "amis" {
@@ -39,12 +43,20 @@ variable "amis" {
   })))
   default = {
     "us-east-2" = {
-      "rocky8" = {
-        ami  = "ami-02391db2758465a87"
-        user = "rocky"
-      }
+# Documentation: https://www.suse.com/suse-rke2/support-matrix/all-supported-versions/rke2-v1-35/
+# We can safely remove Rocky 8 from testing because the default channel 'stable' is RKE2 v1.36+
+# Official support for RHEL/Rocky/Amazon Linux 8 ended with RKE2 v1.35
+# We can leave this in the event we need to test an older version of RKE2
+#      "rocky8" = {
+#        ami  = "ami-02391db2758465a87"
+#        user = "rocky"
+#      }
       "rocky9" = {
         ami  = "ami-05150ea4d8a533099"
+        user = "rocky"
+      }
+      "rocky10" = {
+        ami  = "ami-03582dd0dbc98678a"
         user = "rocky"
       }
       "ubuntu22" = {
@@ -55,15 +67,14 @@ variable "amis" {
         ami  = "ami-036841078a4b68e14"
         user = "ubuntu"
       }
-      "sles15" = {
-        # WIP: This is SLES SP7. Needs testing...
-        ami  = "ami-01de4781572fa1285"
-        #        ami  = "ami-0371c70ae504994fd"
+      "sles16" = {
+        ami  = "ami-04c81635606c22655"
         user = "sles"
       }
       "slem6" = {
-        # WIP: This AMI ID is valid but its not available without subscription. Working out a solution...
-        ami  = "ami-01f988ce7e5a84929"
+        # SLE Micro 6.1
+        # 6.2 is not yet available on AWS as of 10/15/2026
+        ami  = "ami-0f835133e57750b8f"
         user = "sles"
       }
     }

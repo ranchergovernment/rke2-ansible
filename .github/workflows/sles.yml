@@ -7,9 +7,9 @@ on:
 
 jobs:
 
-  "_15sp7_":
+  "_16_":
     uses: ./.github/workflows/reusable_integration_testing.yml
     with:
-      os: sles15
+      os: sles16
       ssh_user: sles
     secrets: inherit
