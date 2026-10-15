@@ -4,8 +4,14 @@ This directory demonstrates a simplified inventory for launching RKE2 instances 
 
 ## Requirements
 
-* SLE Micro 6 - Older versions of SLE Micro do not play nicely with this playbook. 
-* Ansible 2.20+ - Older versions may or may not work. For example, we did encounter issues with 2.14 provided by Alma 9.
+* SLE Micro 6 &mdash; Older versions of SLE Micro do not play nicely with this playbook.
+* Ansible 2.16+ &mdash; Older versions of Ansible may or may not work. For example, we were unable to use the playbook on Ansible 2.14 provided by Alma 9. We attempted to make this addition to the playbook compatible with older versions of Ansible, but YMMV.
+
+## Filing Issues
+
+Support for SLE Micro 6 is in an experimental phase. If you encounter issues not covered in this document, we encourage you to open a GitHub issue using the following link:
+
+* [RKE2 Ansible Playbook Issues](https://github.com/ranchergovernment/rke2-ansible/issues)
 
 ## The Default Behavior
 
@@ -18,13 +24,13 @@ rke2_user_slem_rpms: true
 ```
 ## The Playbook Run
 
-The Ansible playbook remains unchanged, though there are a few items of note.
+The Ansible playbook remains unchanged, though there are a few items of note:
 
 ### Private Repositories
 
-When selecting the *RPM method*, SLE Micro needs the RKE2 Zypper repositories to be configured. By default, the playbook configures them for you, assuming you have access to the open Internet.
+When selecting the *RPM method*, SLE Micro needs the RKE2 Zypper repositories. By default, the playbook configures them for you, but assumes you have access to the open Internet.
 
-If you are in an air-gapped environment, you will need to configure those repositories. You can change the default values via the Ansible variables.
+If you are running the playbook in an air-gapped environment, you need to configure those repositories. You can change the default values using Ansible variables, in your `group_vars/all.yml` file.
 
 The following block is an example of what your `group_var/all.yaml` file may look like:
 
@@ -42,7 +48,7 @@ rke2_common_zypper_repo:
   enabled: true
 
 rke2_versioned_zypper_repo:
-  name: "rancher-rke2-v{{ rke2_version_majmin }}" 
+  name: "rancher-rke2-v{{ rke2_version_majmin }}"
   description: "Rancher RKE2 v{{ rke2_version_majmin }}"
   baseurl: "https://my.private-repo.io/rke2/{{ rke2_channel }}/{{ rke2_version_majmin }}/slemicro/x86_64"
   gpgcheck: true
@@ -52,7 +58,8 @@ rke2_versioned_zypper_repo:
 
 ### The Transactional Update
 
-When installing via the *RPM method*, the `transactional-update` command requires an immediate reboot of the system. This blind reboot has not been a problem in our testing. YMMV.
+When installing via the *RPM method*, the `transactional-update` requires an immediate reboot of the system. This blind reboot has not been a problem in our testing, but YMMV. If you encounter issues with this approach, please feel free to open an issue.
+
 
 ### Installation Locations
 
