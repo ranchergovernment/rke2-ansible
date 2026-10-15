@@ -35,7 +35,7 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
-    # WIP: Testing this... 
+    # WIP: Testing this...
     - name: Force zypper repo update
       ansible.builtin.shell: "zypper --gpg-auto-import-keys ref"
 
