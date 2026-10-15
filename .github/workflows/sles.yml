@@ -11,5 +11,5 @@ jobs:
     uses: ./.github/workflows/reusable_integration_testing.yml
     with:
       os: sles16
-      ssh_user: sles
+      ssh_user: ec2-user
     secrets: inherit
