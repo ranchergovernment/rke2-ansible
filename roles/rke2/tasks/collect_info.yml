@@ -12,7 +12,7 @@
   ansible.builtin.set_fact:
     install_method: tarball
   when: |-
-      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky' or ansible_os_family == 'Suse' and rke2_use_slem_rpms == false) or
+      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky' or ansible_os_family == 'Suse' and not rke2_use_slem_rpms) or
       rke2_install_tarball_url != "" or
       rke2_install_local_tarball_path != "" or
       rke2_force_tarball_install|bool)
@@ -44,8 +44,8 @@
   when:
     - ansible_os_family == 'Suse'
     - ansible_distribution == 'SLES'
-    - rke2_use_slem_rpms == true
-    - transactional_update_present == false
+    - rke2_use_slem_rpms
+    - not transactional_update_present
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
@@ -56,8 +56,8 @@
   when:
     - ansible_os_family == 'Suse'
     - ansible_distribution == 'SL-Micro' or ansible_distribution == 'SLES'
-    - transactional_update_present == true
-    - rke2_use_slem_rpms == true
+    - transactional_update_present
+    - rke2_use_slem_rpms
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
