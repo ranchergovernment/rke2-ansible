@@ -68,13 +68,13 @@ variable "amis" {
         user = "ubuntu"
       }
       "sles16" = {
-        ami  = "ami-04c81635606c22655"
+        ami  = "ami-0b52396b3bb9efa2c"
         user = "sles"
       }
       "slem6" = {
         # SLE Micro 6.1
         # 6.2 is not yet available on AWS as of 10/15/2026
-        ami  = "ami-0f835133e57750b8f"
+        ami  = "ami-08175eb275f2edd51"
         user = "sles"
       }
     }
