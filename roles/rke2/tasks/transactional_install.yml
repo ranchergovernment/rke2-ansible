@@ -42,7 +42,7 @@
         - inventory_hostname in groups['rke2_servers']
       block:
         - name: Run transactional-update
-          ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
+          ansible.builtin.command: "/sbin/transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
           register: transactional_update
           changed_when: >-
             "'rke2-server' is already installed" not in transactional_update.stdout
@@ -58,7 +58,7 @@
         - inventory_hostname in groups.get('rke2_agents', [])
       block:
         - name: Run transactional-update
-          ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
+          ansible.builtin.command: "/sbin/transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
           register: transactional_update
           changed_when: >-
             "'rke2-server' is already installed" not in transactional_update.stdout
