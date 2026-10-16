@@ -1,0 +1,15 @@
+---
+name: SLES
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+
+  "_16_":
+    uses: ./.github/workflows/reusable_integration_testing.yml
+    with:
+      os: sles16
+      ssh_user: ec2-user
+    secrets: inherit

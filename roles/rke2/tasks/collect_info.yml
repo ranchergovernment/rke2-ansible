@@ -12,7 +12,7 @@
   ansible.builtin.set_fact:
     install_method: tarball
   when: |-
-      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky') or
+      ((ansible_facts['os_family'] != 'RedHat' and ansible_facts['os_family'] != 'Rocky' or ansible_os_family == 'Suse' and not rke2_use_slem_rpms) or
       rke2_install_tarball_url != "" or
       rke2_install_local_tarball_path != "" or
       rke2_force_tarball_install|bool)
@@ -26,6 +26,39 @@
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
     - not rke2_force_tarball_install|bool
+  tags: ["cis", "setup-os"]
+
+- name: Check for the existence of transactional-update
+  ansible.builtin.stat:
+    path: /sbin/transactional-update
+  register: tu_check
+
+- name: Set fact for transactional-update
+  ansible.builtin.set_fact:
+    transactional_update_present: "{{ tu_check.stat.exists }}"
+
+- name: Set for install method of zypper
+  ansible.builtin.set_fact:
+    install_method: zypper
+  when:
+    - ansible_os_family == 'Suse'
+    - ansible_distribution == 'SLES'
+    - rke2_use_slem_rpms
+    - not transactional_update_present
+    - rke2_install_local_tarball_path == ""
+    - rke2_install_tarball_url == ""
+  tags: ["cis", "setup-os"]
+
+- name: Set for install method of transactional
+  ansible.builtin.set_fact:
+    install_method: transactional
+  when:
+    - ansible_os_family == 'Suse'
+    - ansible_distribution == 'SL-Micro' or ansible_distribution == 'SLES'
+    - transactional_update_present
+    - rke2_use_slem_rpms
+    - rke2_install_local_tarball_path == ""
+    - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
 
 - name: Set as server
