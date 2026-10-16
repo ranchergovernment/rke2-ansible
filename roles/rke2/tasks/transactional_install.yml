@@ -43,7 +43,7 @@
       block:
         - name: Run transactional-update
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
-          register: transactional_update 
+          register: transactional_update
           changed_when: >-
             "'rke2-server' is already installed" not in transactional_update.stdout
           failed_when: transactional_update.rc != 0
@@ -59,7 +59,7 @@
       block:
         - name: Run transactional-update
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
-          register: transactional_update 
+          register: transactional_update
           changed_when: >-
             "'rke2-server' is already installed" not in transactional_update.stdout
           failed_when: transactional_update.rc != 0
