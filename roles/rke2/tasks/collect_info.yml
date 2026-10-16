@@ -29,14 +29,13 @@
   tags: ["cis", "setup-os"]
 
 - name: Check for the existence of transactional-update
-  ansible.builtin.shell: command -v transactional-update
+  ansible.builtin.stat:
+    path: /sbin/transactional-update
   register: tu_check
-  changed_when: false
-  failed_when: false
 
 - name: Set fact for transactional-update
   ansible.builtin.set_fact:
-    transactional_update_present: "{{ tu_check.rc == 0 }}"
+    transactional_update_present: "{{ tu_check.stat.exists }}"
 
 - name: Set for install method of zypper
   ansible.builtin.set_fact:
