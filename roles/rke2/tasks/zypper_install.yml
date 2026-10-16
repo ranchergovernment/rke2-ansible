@@ -52,4 +52,3 @@
       changed_when: >-
         "'rke2-server' is already installed" not in zypper_install.stdout
       failed_when: transactional_update.rc != 0
-
