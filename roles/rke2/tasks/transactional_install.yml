@@ -35,6 +35,7 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
+
     # SLE Micro
     - name: Transactional Zypper Install of rke2-server on server nodes
       when:
@@ -42,6 +43,10 @@
       block:
         - name: Run transactional-update
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
+          register: transactional_update 
+          changed_when: >-
+            "'rke2-server' is already installed" not in transactional_update.stdout
+          failed_when: transactional_update.rc != 0
         - name: Transactional Update requires a reboot
           ansible.builtin.reboot:
             post_reboot_delay: 30
@@ -54,6 +59,10 @@
       block:
         - name: Run transactional-update
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
+          register: transactional_update 
+          changed_when: >-
+            "'rke2-server' is already installed" not in transactional_update.stdout
+          failed_when: transactional_update.rc != 0
         - name: Transactional Update requires a reboot
           ansible.builtin.reboot:
             post_reboot_delay: 30

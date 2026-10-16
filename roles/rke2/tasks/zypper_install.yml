@@ -40,7 +40,16 @@
     - name: Zypper-based Install
       when: inventory_hostname in groups['rke2_servers']
       ansible.builtin.shell: "zypper --gpg-auto-import-keys install -y rke2-server"
+      register: zypper_install 
+      changed_when: >-
+        "'rke2-server' is already installed" not in zypper_install.stdout
+      failed_when: transactional_update.rc != 0
 
     - name: Zypper-based Install
       when: inventory_hostname in groups['rke2_agents']
       ansible.builtin.shell: "zypper --gpg-auto-import-keys install -y rke2-agent"
+      register: zypper_install 
+      changed_when: >-
+        "'rke2-server' is already installed" not in zypper_install.stdout
+      failed_when: transactional_update.rc != 0
+
