@@ -1,4 +1,5 @@
 ---
+# Currently, RPM-based installations of RKE2 are only supported on SLES 16
 - name: Install all from remote web server
   when: rke2_rpms_path | length == 0
   block:
@@ -35,7 +36,7 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
-    # WIP: Detect agents vs servers
+    # Detect agents vs servers
     - name: Zypper-based Install
       when: inventory_hostname in groups['rke2_servers']
       ansible.builtin.shell: "zypper --gpg-auto-import-keys install -y rke2-server"

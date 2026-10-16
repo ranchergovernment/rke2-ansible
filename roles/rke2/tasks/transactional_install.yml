@@ -35,17 +35,12 @@
         gpgkey: "{{ rke2_versioned_zypper_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_zypper_repo.enabled }}"
 
-    # WIP: Testing this...
-    - name: Force zypper repo update
-      ansible.builtin.shell: "zypper --gpg-auto-import-keys ref"
-
     # SLE Micro
-    # WIP:  Stil testing...
     - name: Transactional Zypper Install of rke2-server on server nodes
       when:
         - inventory_hostname in groups['rke2_servers']
       block:
-        - name: Run transactional-update cmd
+        - name: Run transactional-update
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-server"
         - name: Transactional Update requires a reboot
           ansible.builtin.reboot:
@@ -56,9 +51,8 @@
     - name: Transactional Zypper Install of rke2-agent on agent nodes
       when:
         - inventory_hostname in groups.get('rke2_agents', [])
-#        - inventory_hostname in groups['rke2_agents']
       block:
-        - name: Run transactional-update cmd
+        - name: Run transactional-update
           ansible.builtin.shell: "transactional-update --no-selfupdate -d run zypper --gpg-auto-import-keys install -y rke2-agent"
         - name: Transactional Update requires a reboot
           ansible.builtin.reboot:
