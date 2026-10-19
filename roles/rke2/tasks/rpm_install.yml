@@ -93,3 +93,17 @@
         path: "{{ temp_dir.path }}"
         state: absent
       when: temp_dir.path is defined
+
+- name: Set reboot flag for Rocky or RHEL 10
+  ansible.builtin.set_fact:
+    rke2_reboot: true
+  when:
+    - ansible_facts['os_family'] == 'RedHat'
+    - ansible_facts['distribution_version'] is match('^10')
+
+- name: Trigger reboot handler for Rocky/RHEL 10
+  ansible.builtin.debug:
+    msg: "Rocky or RHEL 10 detected, queuing reboot handler."
+  when: rke2_reboot | default(false)
+  changed_when: true
+  notify: Reboot the machine
