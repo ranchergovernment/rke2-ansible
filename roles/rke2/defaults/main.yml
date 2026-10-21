@@ -31,6 +31,27 @@ rke2_versioned_yum_repo:
   gpgkey: "https://rpm.rancher.io/public.key"
   enabled: true
 
+### Common Zypper repo
+### SLES 16 uses the SLE Micro repo as well so we there is no need to define additional repos here for SLES
+### Documentation: https://documentation.suse.com/cloudnative/rke2/latest/en/install/methods.html
+rke2_common_zypper_repo:
+  name: rancher-rke2-common
+  description: "Rancher RKE2 Common {{ rke2_channel }}"
+  baseurl: "https://rpm.rancher.io/rke2/{{ rke2_channel }}/common/slemicro/noarch"
+  gpgcheck: true
+  gpgkey: "https://rpm.rancher.io/public.key"
+  enabled: true
+
+### Versioned Zypper repo
+### Same as above, this works for both SLE Micro and SLES
+rke2_versioned_zypper_repo:
+  name: "rancher-rke2-v{{ rke2_version_majmin }}"
+  description: "Rancher RKE2 v{{ rke2_version_majmin }}"
+  baseurl: "https://rpm.rancher.io/rke2/{{ rke2_channel }}/{{ rke2_version_majmin }}/slemicro/x86_64"
+  gpgcheck: true
+  gpgkey: "https://rpm.rancher.io/public.key"
+  enabled: true
+
 ### Path to directory local to Ansible Control Host that contains RPMS for rke2-server and/or rke2-agent, rke2-common, and optionally rke2-selinux.
 ### Additional RPMs in this folder will be installed as well.
 rke2_rpms_path: ""
@@ -49,6 +70,11 @@ rke2_install_tarball_url: ""
 ### RHEL-based OS's default to RPMs for installation, set to 'true' to force ansible to use a tarball.
 ### Designed for use on an Internet connected system where you want to use the Tarball available from the GitHub.
 rke2_force_tarball_install: false
+
+
+### In order to follow the behavior of the RKE2 installer, SLE Micro should use the tarball method unless otherwise specified
+### If you want to use the RPM installation method for SLE Micro, you can change this flag
+rke2_use_slem_rpms: false
 
 ## Images to load directly into RKE2 via agent/images directory:
 
@@ -72,13 +98,13 @@ host_rke2_config: {}
 ## API Address for Cluster if behind Loadbalancer or Virtual IP.
 rke2_kubernetes_api_server_host: ""
 
-## Path, local to Ansible control host, where audit policy can be found.
+## Path, local to Ansible control host, where audit policy can be found. File can be a template.
 rke2_audit_policy_config_file_path: ""
 
-## Path, local to Ansible control host, where registries config can be found.
+## Path, local to Ansible control host, where registries config can be found. File can be a template.
 rke2_registry_config_file_path: ""
 
-## Path, local to Ansible control host, where PSA policy can be found.
+## Path, local to Ansible control host, where PSA policy can be found. File can be a template.
 rke2_pod_security_admission_config_file_path: ""
 
 ## Set 'true' if Ansible should automatically add IPTABLES rules to allow for Kubernetes traffic.
@@ -90,10 +116,10 @@ rke2_manifest_config_directory: ""
 ## Path, local to Ansible control host, where manifests can be found that will be added (to server/manifests directory) and automatically applied after last server is up.
 rke2_manifest_config_post_run_directory: ""
 
-## Path, local to Ansible control host, where systemd environment file config can be found (Proxy Config).
+## Path, local to Ansible control host, where systemd environment file config can be found (Proxy Config). File can be a template.
 rke2_systemd_env_config_file_path: ""
 
-## Path, local to Ansible control host, where kube-api-authn-webhook.yaml config can be found (ACE Config).
+## Path, local to Ansible control host, where kube-api-authn-webhook.yaml config (or template) can be found (ACE Config).
 ### Warning: You must also set:
 ### rke2_config:
 ###    kube-apiserver-arg:
@@ -107,6 +133,10 @@ rke2_agent_service_restart_throttle: 1
 
 ## Various CNIs and RKE2 both recommend disabling firewalld. Set to true if you want this playbook to leave the state of firewalld untouched.
 rke2_ignore_firewalld: false
+
+
+## Clean/Delete created .repo files in /etc/yum.repos.d/
+rke2_clean_repos: false
 
 # Should not be changed:
 rke2_metrics_running: false

@@ -23,12 +23,15 @@ variable "instance_type" {
 }
 
 # OS Options
-#  rocky8
 #  rocky9
+#  rocky10
+#  slem6
+#  ubuntu22
+#  ubuntu24
 variable "os" {
   type        = string
   description = "AWS AMI OS"
-  default     = "rocky8"
+  default     = "rocky9"
 }
 
 variable "amis" {
@@ -39,12 +42,20 @@ variable "amis" {
   })))
   default = {
     "us-east-2" = {
-      "rocky8" = {
-        ami  = "ami-02391db2758465a87"
-        user = "rocky"
-      }
+# Documentation: https://www.suse.com/suse-rke2/support-matrix/all-supported-versions/rke2-v1-35/
+# We can safely remove Rocky 8 from testing because the default channel 'stable' is RKE2 v1.36+
+# Official support for RHEL/Rocky/Amazon Linux 8 ended with RKE2 v1.35
+# We can leave this in the event we need to test an older version of RKE2
+#      "rocky8" = {
+#        ami  = "ami-02391db2758465a87"
+#        user = "rocky"
+#      }
       "rocky9" = {
         ami  = "ami-05150ea4d8a533099"
+        user = "rocky"
+      }
+      "rocky10" = {
+        ami  = "ami-03582dd0dbc98678a"
         user = "rocky"
       }
       "ubuntu22" = {
@@ -55,8 +66,9 @@ variable "amis" {
         ami  = "ami-036841078a4b68e14"
         user = "ubuntu"
       }
-      "sles15" = {
-        ami  = "ami-0371c70ae504994fd"
+      "slem6" = {
+        # SLE Micro 6.1
+        ami  = "ami-08175eb275f2edd51"
         user = "ec2-user"
       }
     }
