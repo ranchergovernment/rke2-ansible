@@ -25,8 +25,6 @@ variable "instance_type" {
 # OS Options
 #  rocky9
 #  rocky10
-#  slem6
-#  sles16
 #  ubuntu22
 #  ubuntu24
 variable "os" {
