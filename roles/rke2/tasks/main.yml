@@ -10,6 +10,9 @@
   ansible.builtin.include_tasks: pre_reqs.yml
   tags: ["setup-os"]
 
+- name: Ensure oustanding pre-reqs are satisfied by flushing handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Determine if rke2 been installed already
   ansible.builtin.include_tasks: previous_install.yml
 
