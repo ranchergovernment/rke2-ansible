@@ -44,18 +44,24 @@
   notify: Restart fapolicyd
   tags: ["setup-os"]
 
+- name: Check if br_netfilter kernel module is currently loaded
+  ansible.builtin.shell: grep -q '^br_netfilter\s' /proc/modules
+  register: br_netfilter_status
+  failed_when: false
+  changed_when: false
+
 - name: Ensure kernel-modules-extra is installed on EL10 for br_netfilter
   ansible.builtin.dnf:
     name: "kernel-modules-extra-{{ ansible_kernel }}"
     state: present
   when:
+    - br_netfilter_status.rc != 0
     - ansible_facts['os_family'] == 'RedHat'
     - ansible_facts['distribution_version'] is match('^10')
 
 - name: Load br_netfilter kernel module
-  ansible.builtin.modprobe:
-    name: br_netfilter
-    state: present
+  ansible.builtin.command: modprobe br_netfilter
+  when: br_netfilter_status.rc != 0
 
 - name: Ensure br_netfilter loads on boot
   ansible.builtin.copy:
