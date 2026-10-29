@@ -62,6 +62,8 @@
 - name: Load br_netfilter kernel module
   ansible.builtin.command: modprobe br_netfilter
   when: br_netfilter_status.rc != 0
+  register: modprobe_result
+  changed_when: modprobe_result.rc == 0
 
 - name: Ensure br_netfilter loads on boot
   ansible.builtin.copy:
