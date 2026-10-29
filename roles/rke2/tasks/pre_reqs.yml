@@ -43,3 +43,24 @@
       allow perm=any all : dir=/var/lib/kubelet/
   notify: Restart fapolicyd
   tags: ["setup-os"]
+
+- name: Ensure kernel-modules-extra is installed on EL10 for br_netfilter
+  ansible.builtin.dnf:
+    name: "kernel-modules-extra-{{ ansible_kernel }}"
+    state: present
+  when:
+    - ansible_facts['os_family'] == 'RedHat'
+    - ansible_facts['distribution_version'] is match('^10')
+
+- name: Load br_netfilter kernel module
+  ansible.builtin.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Ensure br_netfilter loads on boot
+  ansible.builtin.copy:
+    content: "br_netfilter\n"
+    dest: /etc/modules-load.d/br_netfilter.conf
+    owner: root
+    group: root
+    mode: '0644'
