@@ -43,3 +43,14 @@
       allow perm=any all : dir=/var/lib/kubelet/
   notify: Restart fapolicyd
   tags: ["setup-os"]
+
+# RKE2 list kernel-modules-extra as a hard requirement
+# Documentation: https://docs.rke2.io/install/requirements
+# Specifying the kernel here avoids potential reboot in the event the kernel is upgraded
+- name: Ensure kernel-modules-extra is installed on EL10
+  ansible.builtin.dnf:
+    name: "kernel-modules-extra-{{ ansible_facts['kernel'] }}"
+    state: present
+  when:
+    - ansible_facts['os_family'] == 'RedHat'
+    - ansible_facts['distribution_version'] is match('^10')
