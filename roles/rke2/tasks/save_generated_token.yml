@@ -11,23 +11,27 @@
     src: "{{ rke2_data_dir }}/server/node-token"
   register: node_token
   delegate_to: "{{ token_source_node }}"
+  no_log: true
   tags: ["configure"]
 
 - name: Store Master node-token
   ansible.builtin.set_fact:
     rke2_config_token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
   delegate_to: "{{ token_source_node }}"
+  no_log: true
   tags: ["configure"]
 
 - name: Set temp fact to store token config line
   ansible.builtin.set_fact:
     temp_token:
       token: "{{ rke2_config_token }}"
+  no_log: true
   tags: ["configure"]
 
 - name: Update host_rke2_config fact to contain server line
   ansible.builtin.set_fact:
     host_rke2_config: "{{ temp_token | default({}) | ansible.builtin.combine((host_rke2_config | default({})), list_merge='prepend_rp') }}"
+  no_log: true
   tags: ["configure"]
 
 - name: Set temp fact for api host
@@ -46,4 +50,5 @@
 - name: Update host_rke2_config fact to contain server line
   ansible.builtin.set_fact:
     host_rke2_config: "{{ temp_host_rke2_config | default({}) | ansible.builtin.combine((host_rke2_config | default({})), list_merge='prepend_rp') }}"
+  no_log: true
   tags: ["configure"]
