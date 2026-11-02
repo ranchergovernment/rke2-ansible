@@ -25,6 +25,7 @@ variable "instance_type" {
 # OS Options
 #  rocky9
 #  rocky10
+#  slem6
 #  ubuntu22
 #  ubuntu24
 variable "os" {
@@ -64,6 +65,11 @@ variable "amis" {
       "ubuntu24" = {
         ami  = "ami-036841078a4b68e14"
         user = "ubuntu"
+      }
+      "slem6" = {
+        # SLE Micro 6.1
+        ami  = "ami-08175eb275f2edd51"
+        user = "ec2-user"
       }
     }
   }
