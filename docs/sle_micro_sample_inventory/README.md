@@ -28,7 +28,7 @@ The Ansible playbook remains unchanged, though there are a few items of note:
 
 ### Private Repositories
 
-When selecting the *RPM method*, SLE Micro needs the RKE2 Zypper repositories. By default, the playbook configures them for you, but assumes you have access to the open Internet.
+When selecting the *RPM method*, SLE Micro needs the RKE2 zypper repositories. By default, the playbook configures them for you, but assumes you have access to the open Internet.
 
 If you are running the playbook in an air-gapped environment, you need to configure those repositories. You can change the default values using Ansible variables, in your `group_vars/all.yml` file.
 
