@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python.
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: 3.11
 
       - name: Install ansible-lint
         run: pip3 install ansible-lint ansible
@@ -41,7 +41,7 @@ jobs:
       - name: Set up Python.
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: 3.11
 
       - name: Install yamllint
         run: pip3 install yamllint
