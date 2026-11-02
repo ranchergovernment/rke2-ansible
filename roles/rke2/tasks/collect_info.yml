@@ -33,15 +33,15 @@
     path: /sbin/transactional-update
   register: tu_check
   when:
-  - ansible_os_family == 'Suse'
-  - rke2_use_slem_rpms
+    - ansible_os_family == 'Suse'
+    - rke2_use_slem_rpms
 
 - name: Set fact for transactional-update
   ansible.builtin.set_fact:
     transactional_update_present: "{{ tu_check.stat.exists }}"
   when:
-  - ansible_os_family == 'Suse'
-  - rke2_use_slem_rpms
+    - ansible_os_family == 'Suse'
+    - rke2_use_slem_rpms
 
 - name: Set for install method of transactional
   ansible.builtin.set_fact:
