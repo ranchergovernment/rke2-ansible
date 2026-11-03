@@ -116,15 +116,15 @@ jobs:
 
       - name: Run playbook
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} -vv --private-key .key ./playbooks/install.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} -vv --private-key .key -e rke2_install_version=${{env.RKE2_INSTALL_VERSION}} ./playbooks/install.yml
 
       - name: Run playbook again for idempotency
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} -vv --private-key .key ./playbooks/install.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} -vv --private-key .key -e rke2_install_version=${{env.RKE2_INSTALL_VERSION}} ./playbooks/install.yml
 
       - name: Run Ansible Tests
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} --verbose --skip-tags "troubleshooting" --private-key .key playbooks/testing.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} --verbose --skip-tags "troubleshooting" --private-key .key -e rke2_install_version=${{env.RKE2_INSTALL_VERSION}} playbooks/testing.yml
 
       - name: Run Python Tests
         run: |
@@ -143,11 +143,11 @@ jobs:
           
       - name: Run playbook again with added host
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} --verbose --private-key .key ./playbooks/install.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} --verbose --private-key .key -e rke2_install_version=${{env.RKE2_INSTALL_VERSION}} ./playbooks/install.yml
 
       - name: Run Ansible Tests with added host
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} --verbose --skip-tags "troubleshooting" --private-key .key playbooks/testing.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} --verbose --skip-tags "troubleshooting" --private-key .key -e rke2_install_version=${{env.RKE2_INSTALL_VERSION}} playbooks/testing.yml
 
       - name: Run Python Tests with added host
         run: |
@@ -158,7 +158,7 @@ jobs:
       - name: Run troubleshoot tasks
         if: ${{ failure() }}
         run: |
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} -vvv --tags "troubleshooting" --private-key .key playbooks/testing.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./${{ inputs.os }}/hosts.yml -u ${{ inputs.ssh_user }} -vvv --tags "troubleshooting" --private-key .key -e rke2_install_version=${{env.RKE2_INSTALL_VERSION}} playbooks/testing.yml
 
       - name: Delete Stack
         if: ${{ always() }}
