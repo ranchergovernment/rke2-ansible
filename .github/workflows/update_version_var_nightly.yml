@@ -1,0 +1,25 @@
+name: Update RKE2 Version Variable
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  
+  workflow_dispatch:
+
+jobs:
+    update-var:
+      runs-on: ubuntu-latest
+      permissions:
+        actions: write
+      steps:
+        - name: Run lookup and determine value
+          id: lookup
+          run: |
+          VERSION=$(curl -s -o /dev/null -L -w "%{url_effective}" https://update.rke2.io/v1-release/channels/stable | awk -F'/' '{print $NF}')
+          echo "Fetched RKE2 version: $VERSION"
+          echo "rke2_version=$VERSION" >> $GITHUB_OUTPUT
+
+        - name: Update rke2_install_version var
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            gh variable set RKE2_INSTALL_VERSION --body "${{ steps.lookup.outputs.value }}"
