@@ -22,7 +22,7 @@
   ansible.builtin.set_fact:
     install_method: rpm
   when:
-    - ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
+    - ansible_facts['os_family'] == 'RedHat' or ansible_facts['os_family'] == 'Rocky'
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
     - not rke2_force_tarball_install|bool
