@@ -76,6 +76,9 @@ rke2_force_tarball_install: false
 ### If you want to use the RPM installation method for SLE Micro, you can change this flag
 rke2_use_slem_rpms: false
 
+# Do not manually set this, this is only to be evaluated when request RPM installs on Suse
+transactional_update_present: false
+
 ## Images to load directly into RKE2 via agent/images directory:
 
 ### URL of image tarball.

@@ -33,15 +33,15 @@
     path: /sbin/transactional-update
   register: tu_check
   when:
-    - ansible_facts['os_family'] == 'Suse'
     - rke2_use_slem_rpms
+    - ansible_facts['os_family'] == 'Suse'
 
 - name: Set fact for transactional-update
   ansible.builtin.set_fact:
     transactional_update_present: "{{ tu_check.stat.exists }}"
   when:
-    - ansible_facts['os_family'] == 'Suse'
     - rke2_use_slem_rpms
+    - ansible_facts['os_family'] == 'Suse'
 
 - name: Set for install method of transactional
   ansible.builtin.set_fact:
@@ -49,8 +49,8 @@
   when:
     - ansible_facts['os_family'] == 'Suse'
     - ansible_facts['distribution'] == 'SL-Micro' or ansible_facts['distribution'] == 'SLES'
-    - transactional_update_present
     - rke2_use_slem_rpms
+    - transactional_update_present
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
   tags: ["cis", "setup-os"]
