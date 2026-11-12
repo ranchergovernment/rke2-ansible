@@ -27,7 +27,7 @@
 
 - name: Copy systemctl file for kernel hardening
   ansible.builtin.copy:
-    src: "{{ (install_method == 'rpm') | ternary('/usr/share/rke2/rke2-cis-sysctl.conf', rke2_tarball_install_dir + '/share/rke2/rke2-cis-sysctl.conf') }}"
+    src: "{{ (install_method in ['rpm', 'transactional']) | ternary('/usr/share/rke2/rke2-cis-sysctl.conf', rke2_tarball_install_dir + '/share/rke2/rke2-cis-sysctl.conf') }}"
     dest: /etc/sysctl.d/60-rke2-cis.conf
     remote_src: true
     mode: '0644'
