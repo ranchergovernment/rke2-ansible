@@ -74,7 +74,7 @@
       when:
         - install_method == "rpm"
     - name: Transactional Install
-      ansible.builtin.include_tasks: transactional_install.yml 
+      ansible.builtin.include_tasks: transactional_install.yml
       when:
         - install_method == "transactional"
 
