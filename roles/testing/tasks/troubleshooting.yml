@@ -32,16 +32,20 @@
     - troubleshooting
   ignore_errors: true
 
-- name: Show rke2 config file
-  ansible.builtin.command: >-
-    cat /etc/rancher/rke2/config.yaml
+- name: Read redacted RKE2 config file
+  ansible.builtin.command:
+    argv:
+      - sed
+      - -E
+      - 's/^([[:space:]]*(token|agent-token):).*/\1 <redacted>/'
+      - /etc/rancher/rke2/config.yaml
   changed_when: false
   register: command_output
   tags:
     - troubleshooting
   ignore_errors: true
 
-- name: Show rke2 config file
+- name: Show redacted RKE2 config file
   ansible.builtin.debug:
     var: command_output.stdout_lines
   tags:

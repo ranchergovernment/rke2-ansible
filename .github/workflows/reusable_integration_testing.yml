@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Add terraform repository
         run: |
@@ -27,9 +27,9 @@ jobs:
 
       - name: Set up Python
         id: setup_python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.11
 
       - name: Install dependencies
         run: |
