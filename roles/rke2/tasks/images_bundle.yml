@@ -13,6 +13,7 @@
     mode: "0644"
   when:
     - rke2_images_urls != []
+    - not legacy_ansible_modern_python
   with_items: "{{ rke2_images_urls }}"
   notify: "Restart {{ service_name }}"
 

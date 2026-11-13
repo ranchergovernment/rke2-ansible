@@ -25,6 +25,7 @@
     mode: "0644"
   when:
     - rke2_install_tarball_url != ""
+    - not legacy_ansible_modern_python
 
 - name: Check if new tarball is needed from github
   ansible.builtin.set_fact:
@@ -43,6 +44,7 @@
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
     - rke2_version_changed
+    - not legacy_ansible_modern_python
 
 - name: Ensure Tar utility installed on system
   ansible.builtin.package:

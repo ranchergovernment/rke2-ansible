@@ -54,3 +54,33 @@
   when:
     - ansible_facts['os_family'] == 'RedHat'
     - ansible_facts['distribution_version'] is match('^10')
+
+- name: Determine if legacy Ansible is running modern Python
+  ansible.builtin.set_fact:
+    legacy_ansible_modern_python: true
+  when:
+    - ansible_version.full is version('2.16', '<')
+    - ansible_facts['python_version'] is version('3.12', '>=')
+
+- name: Check if curl is installed and working
+  ansible.builtin.command: curl --version
+  register: curl_check
+  failed_when: false
+  changed_when: false
+  when:
+    - legacy_ansible_modern_python
+
+- name: Set has_curl fact based on exit status
+  ansible.builtin.set_fact:
+    has_curl: "{{ curl_check.rc == 0 }}"
+  when:
+    - legacy_ansible_modern_python
+
+- name: Enforce curl requirement when running legacy Ansible (before 2.16) with modern Python (3.12+)
+  ansible.builtin.assert:
+    that:
+      - not legacy_ansible_modern_python or has_curl
+    fail_msg: >-
+      Ansible is older than 2.16 and host Python is 3.12+, but 'curl' is missing 
+      on the host. Update Ansible to 2.16+ or install curl on the target hosts.
+    success_msg: "Ansible and Python versions are matched"

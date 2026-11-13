@@ -27,6 +27,8 @@
     client_cert: "{{ rke2_data_dir }}/server/tls/client-admin.crt"
     client_key: "{{ rke2_data_dir }}/server/tls/client-admin.key"
   register: node_metrics
+  when:
+    - not legacy_ansible_modern_python
   retries: "{{ check_node_ready_retries }}"
   delay: "{{ check_node_ready_delay }}"
   ignore_errors: "{{ check_node_ready_ignore_errors }}"

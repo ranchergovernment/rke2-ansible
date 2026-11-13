@@ -122,3 +122,4 @@ rke2_reboot: false
 rke2_version_majmin: ""
 rke2_version_rpm: ""
 rke2_package_state: "installed"
+rke2_legacy_ansible_modern_python: false

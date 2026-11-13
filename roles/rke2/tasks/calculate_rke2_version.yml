@@ -6,6 +6,8 @@
     follow_redirects: safe
     remote_src: true
   register: rke2_version_url
+  when:
+    - not legacy_ansible_modern_python
 
 - name: Set rke2_install_version fact from internet source
   ansible.builtin.set_fact:
