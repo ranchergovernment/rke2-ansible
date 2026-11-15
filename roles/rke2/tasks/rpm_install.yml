@@ -21,6 +21,7 @@
         gpgcheck: "{{ rke2_common_yum_repo.gpgcheck }}"
         gpgkey: "{{ rke2_common_yum_repo.gpgkey }}"
         enabled: "{{ rke2_common_yum_repo.enabled }}"
+        when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
 
     # Add RKE2 versioned repo
     - name: Add the rke2 versioned repo CentOS/RHEL/Rocky
@@ -31,7 +32,7 @@
         gpgcheck: "{{ rke2_versioned_yum_repo.gpgcheck }}"
         gpgkey: "{{ rke2_versioned_yum_repo.gpgkey }}"
         enabled: "{{ rke2_versioned_yum_repo.enabled }}"
-
+        when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
     # - name: Debug
     #   debug:
     #     msg: "Installing: {{ service_name }} Version: {{ rke2_version_rpm }} "
@@ -45,6 +46,30 @@
       retries: 10
       until: result is succeeded
       delay: 30
+      when: ansible_os_family == 'RedHat' or ansible_os_family == 'Rocky'
+      
+    # Add RKE2 Common repo (SUSE)
+    - name: Add the rke2-common repo SUSE
+      ansible.builtin.zypper_repository:
+        name: "{{ rke2_common_yum_repo.name }}"
+        repo: "{{ rke2_common_yum_repo.baseurl }}"
+        auto_import_keys: yes
+        when: ansible_os_family == 'Suse'
+
+    - name: Add the rke2 versioned repo SUSE
+      ansible.builtin.zypper_repository:
+        name: "{{ rke2_versioned_yum_repo.name }}"
+        repo: "{{ rke2_versioned_yum_repo.baseurl }}"
+        auto_import_keys: yes
+        when: ansible_os_family == 'Suse'
+      
+    - name: Transactional-Based Install
+      ansible.builtin.command: "transactional-update pkg install -y {{ service_name }}{{ rke2_version_rpm }}"
+      register: result
+      retries: 10
+      until: result is succeeded
+      delay: 30
+      when: ansible_os_family == 'Suse'
 
 - name: Install all from local directory
   when: rke2_rpms_path | length > 0
