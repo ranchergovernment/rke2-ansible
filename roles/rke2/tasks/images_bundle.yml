@@ -17,6 +17,20 @@
   with_items: "{{ rke2_images_urls }}"
   notify: "Restart {{ service_name }}"
 
+# WIP: Attempt to fix mismatch between legacy Ansible and modern Python
+#################################################################################################
+- name: Download images tar files url (via curl)
+  ansible.builtin.shell: >-
+    curl -sSfL "{{ item }}" -o "{{ rke2_data_dir }}/agent/images/{{ item | basename }}"
+    && chmod 0644 "{{ rke2_data_dir }}/agent/images/{{ item | basename }}"
+  when:
+    - rke2_images_urls != []
+    - legacy_ansible_modern_python
+  loop: "{{ rke2_images_urls }}"
+  notify: "Restart {{ service_name }}"
+  changed_when: true
+#################################################################################################
+
 - name: Copy local tarball images
   ansible.builtin.copy:
     src: "{{ item }}"

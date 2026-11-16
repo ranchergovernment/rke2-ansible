@@ -34,6 +34,27 @@
   ignore_errors: "{{ check_node_ready_ignore_errors }}"
   tags: ["configure"]
 
+# WIP: Work around for legacy Ansible and modern Python
+#########################################################################
+- name: Get node_metrics with curl 
+  ansible.builtin.command:
+    cmd: >-
+      curl -s
+      --cacert "{{ rke2_data_dir }}/server/tls/server-ca.crt"
+      --cert "{{ rke2_data_dir }}/server/tls/client-admin.crt"
+      --key "{{ rke2_data_dir }}/server/tls/client-admin.key"
+      https://localhost:10250/metrics
+  when:
+    - legacy_ansible_modern_python
+  register: node_metrics
+  retries: "{{ check_node_ready_retries }}"
+  delay: "{{ check_node_ready_delay }}"
+  until: node_metrics.rc == 0
+  ignore_errors: "{{ check_node_ready_ignore_errors }}"
+  changed_when: false
+  tags: ["configure"]
+#########################################################################
+
 - name: Check that node_metrics collection was successful
   ansible.builtin.set_fact:
     rke2_metrics_running: true
