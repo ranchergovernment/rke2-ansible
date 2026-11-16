@@ -9,13 +9,16 @@
   when:
     - not legacy_ansible_modern_python
 
+- name: Set rke2_install_version fact from internet source
+  ansible.builtin.set_fact:
+    rke2_install_version: "{{ rke2_version_url.url | ansible.builtin.urlsplit('path') | ansible.builtin.basename }}"
+  changed_when: false
+
 # WIP: Attempt to fix mismatch between legacy Ansible and modern python
 ######################################################################################
-- name: Get versions from update.rke2.io (via curl and awk url_effective)
+- name: Get versions from update.rke2.io with curl
   ansible.builtin.command:
-    cmd: >-
-      curl -s -o /dev/null -L -w "%{url_effective}" https://update.rke2.io/v1-release/channels/{{ rke2_channel }}
-      | awk -F'/' '{print $NF}'
+    cmd: curl -s -o /dev/null -L -w "%{url_effective}" https://update.rke2.io/v1-release/channels/{{ rke2_channel }}
   when:
     - legacy_ansible_modern_python
   register: rke2_version_url_raw
@@ -23,14 +26,7 @@
 
 - name: Normalize curl output to match uri module register schema
   ansible.builtin.set_fact:
-    rke2_version_url:
-      json:
-        latest: "{{ rke2_version_url_raw.stdout | trim }}"
+    rke2_install_version: "{{ rke2_version_url_raw.stdout | trim | ansible.builtin.urlsplit('path') | ansible.builtin.basename }}"
   when:
     - legacy_ansible_modern_python
 ######################################################################################
-
-- name: Set rke2_install_version fact from internet source
-  ansible.builtin.set_fact:
-    rke2_install_version: "{{ rke2_version_url.url | ansible.builtin.urlsplit('path') | ansible.builtin.basename }}"
-  changed_when: false
