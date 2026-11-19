@@ -25,7 +25,7 @@
     mode: "0644"
   when:
     - rke2_install_tarball_url != ""
-    - not legacy_ansible_modern_python
+    - not rke2_legacy_ansible_modern_python
 
 # WIP: Alternative for legacy Ansible and Modern Python
 ###################################################################################################
@@ -34,7 +34,7 @@
     cmd: "curl -sSfL {{ rke2_install_tarball_url }} -o {{ temp_dir.path }}/rke2.linux-{{ arch }}.tar.gz"
   when:
     - rke2_install_tarball_url != ""
-    - legacy_ansible_modern_python
+    - rke2_legacy_ansible_modern_python
   changed_when: true
 
 - name: Set permissions on downloaded tarball
@@ -43,7 +43,7 @@
     mode: "0644"
   when:
     - rke2_install_tarball_url != ""
-    - legacy_ansible_modern_python
+    - rke2_legacy_ansible_modern_python
 ###################################################################################################
 
 - name: Check if new tarball is needed from github
@@ -63,7 +63,7 @@
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
     - rke2_version_changed
-    - not legacy_ansible_modern_python
+    - not rke2_legacy_ansible_modern_python
 
 # WIP: Same as above, an alternative curl method for legacy Ansible + Modern Python
 ###################################################################################################
@@ -74,7 +74,7 @@
     - rke2_install_local_tarball_path == ""
     - rke2_install_tarball_url == ""
     - rke2_version_changed
-    - legacy_ansible_modern_python
+    - rke2_legacy_ansible_modern_python
   changed_when: true
 
 - name: Set permissions on downloaded tarball
@@ -83,7 +83,7 @@
     mode: "0644"
   when:
     - rke2_install_tarball_url != ""
-    - legacy_ansible_modern_python
+    - rke2_legacy_ansible_modern_python
 ###################################################################################################
 
 - name: Ensure Tar utility installed on system

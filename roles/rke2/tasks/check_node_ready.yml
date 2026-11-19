@@ -28,7 +28,7 @@
     client_key: "{{ rke2_data_dir }}/server/tls/client-admin.key"
   register: node_metrics
   when:
-    - not legacy_ansible_modern_python
+    - not rke2_legacy_ansible_modern_python
   retries: "{{ check_node_ready_retries }}"
   delay: "{{ check_node_ready_delay }}"
   ignore_errors: "{{ check_node_ready_ignore_errors }}"
@@ -46,7 +46,7 @@
       -w "%{http_code}"
       https://localhost:10250/metrics
   when:
-    - legacy_ansible_modern_python
+    - rke2_legacy_ansible_modern_python
   register: node_metrics_raw
   retries: "{{ check_node_ready_retries }}"
   delay: "{{ check_node_ready_delay }}"
@@ -61,7 +61,7 @@
       status: "{{ (node_metrics_raw.stdout.splitlines() | last | default('')) | int }}"
       content: "{{ (node_metrics_raw.stdout.splitlines()[:-1] | join('\n')) }}"
   when:
-    - legacy_ansible_modern_python
+    - rke2_legacy_ansible_modern_python
     - node_metrics_raw is defined
     - node_metrics_raw.stdout is defined
     - node_metrics_raw.stdout | length > 0
