@@ -36,7 +36,7 @@
 
 # WIP: Work around for legacy Ansible and modern Python
 #########################################################################
-- name: Get and check node_metrics with curl
+- name: Get node_metrics with curl
   ansible.builtin.command:
     cmd: >-
       curl -sS
