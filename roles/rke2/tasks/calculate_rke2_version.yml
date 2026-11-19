@@ -18,7 +18,7 @@
 
 # WIP: Attempt to fix mismatch between legacy Ansible and modern python
 ######################################################################################
-- name: curl versions from update.rke2.io #noqa: command-instead-of-module
+- name: Curl versions from update.rke2.io  # noqa: command-instead-of-module
   ansible.builtin.command:
     cmd: curl -s -o /dev/null -L -w "%{url_effective}" https://update.rke2.io/v1-release/channels/{{ rke2_channel }}
   when:

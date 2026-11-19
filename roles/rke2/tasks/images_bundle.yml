@@ -19,7 +19,7 @@
 
 # WIP: Attempt to fix mismatch between legacy Ansible and modern Python
 #################################################################################################
-- name: Download images tar files url (via curl)
+- name: curl image tar files url  # noqa: command-instead-of-module
   ansible.builtin.shell: >-
     curl -sSfL "{{ item }}" -o "{{ rke2_data_dir }}/agent/images/{{ item | basename }}"
     && chmod 0644 "{{ rke2_data_dir }}/agent/images/{{ item | basename }}"

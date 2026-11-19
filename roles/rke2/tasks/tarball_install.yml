@@ -29,7 +29,7 @@
 
 # WIP: Alternative for legacy Ansible and Modern Python
 ###################################################################################################
-- name: Download Tar from provided URL if specified (via command)
+- name: Curl tar from provided URL if specified  # noqa: command-instead-of-module
   ansible.builtin.command:
     cmd: "curl -sSfL {{ rke2_install_tarball_url }} -o {{ temp_dir.path }}/rke2.linux-{{ arch }}.tar.gz"
   when:

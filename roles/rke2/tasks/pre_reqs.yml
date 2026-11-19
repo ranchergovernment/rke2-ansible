@@ -62,7 +62,10 @@
     - ansible_version.full is version('2.16', '<')
     - ansible_facts['python_version'] is version('3.12', '>=')
 
-- name: Check if curl is installed and working
+# Maintain compatibility with EL9 running against modern hosts (EL10, SLE Micro 6, etc)
+# Ansible before 2.16 have the builtins get_url and uri pass a deprecated argument to modern Python (3.12+)
+# We can work around the issue with curl if it is available
+- name: Check if curl is installed and working  # noqa: command-instead-of-module
   ansible.builtin.command: curl --version
   register: curl_check
   failed_when: false
@@ -81,6 +84,6 @@
     that:
       - not legacy_ansible_modern_python or has_curl
     fail_msg: >-
-      Ansible is older than 2.16 and host Python is 3.12+, but 'curl' is missing 
+      Ansible is older than 2.16 and host Python is 3.12+, but 'curl' is missing
       on the host. Update Ansible to 2.16+ or install curl on the target hosts.
     success_msg: "Ansible and Python versions are matched"
