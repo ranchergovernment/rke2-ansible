@@ -13,6 +13,8 @@
   ansible.builtin.set_fact:
     rke2_install_version: "{{ rke2_version_url.url | ansible.builtin.urlsplit('path') | ansible.builtin.basename }}"
   changed_when: false
+  when:
+    - not legacy_ansible_modern_python
 
 # WIP: Attempt to fix mismatch between legacy Ansible and modern python
 ######################################################################################
