@@ -18,7 +18,7 @@
 
 # WIP: Attempt to fix mismatch between legacy Ansible and modern python
 ######################################################################################
-- name: Get versions from update.rke2.io with curl
+- name: curl versions from update.rke2.io #noqa: command-instead-of-module
   ansible.builtin.command:
     cmd: curl -s -o /dev/null -L -w "%{url_effective}" https://update.rke2.io/v1-release/channels/{{ rke2_channel }}
   when:
@@ -26,7 +26,7 @@
   register: rke2_version_url_raw
   changed_when: false
 
-- name: Normalize curl output to match uri module register schema
+- name: Normalize curl output
   ansible.builtin.set_fact:
     rke2_install_version: "{{ rke2_version_url_raw.stdout | trim | ansible.builtin.urlsplit('path') | ansible.builtin.basename }}"
   when:
