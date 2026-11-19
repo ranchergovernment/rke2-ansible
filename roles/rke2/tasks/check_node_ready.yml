@@ -36,7 +36,7 @@
 
 # WIP: Work around for legacy Ansible and modern Python
 #########################################################################
-- name: curl node_metrics  # noqa: command-instead-of-module
+- name: Get node_metrics with curl  # noqa: command-instead-of-module
   ansible.builtin.command:
     cmd: >-
       curl -sS

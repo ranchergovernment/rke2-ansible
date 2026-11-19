@@ -67,7 +67,7 @@
 
 # WIP: Same as above, an alternative curl method for legacy Ansible + Modern Python
 ###################################################################################################
-- name: Download the tar from github releases
+- name: Download the tar from github releases  # noqa: command-instead-of-module
   ansible.builtin.command:
     cmd: "curl -sSfL https://github.com/rancher/rke2/releases/download/{{ rke2_install_version }}/rke2.linux-{{ arch }}.tar.gz -o {{ temp_dir.path }}/rke2.linux-{{ arch }}.tar.gz"
   when:
