@@ -54,7 +54,8 @@ variable "amis" {
         user = "rocky"
       }
       "rocky10" = {
-        ami  = "ami-03582dd0dbc98678a"
+#        ami  = "ami-03582dd0dbc98678a"
+        ami  = "ami-0e148911f7ce160c3"
         user = "rocky"
       }
       "ubuntu22" = {

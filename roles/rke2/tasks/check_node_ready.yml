@@ -27,10 +27,46 @@
     client_cert: "{{ rke2_data_dir }}/server/tls/client-admin.crt"
     client_key: "{{ rke2_data_dir }}/server/tls/client-admin.key"
   register: node_metrics
+  when:
+    - not rke2_legacy_ansible_modern_python
   retries: "{{ check_node_ready_retries }}"
   delay: "{{ check_node_ready_delay }}"
   ignore_errors: "{{ check_node_ready_ignore_errors }}"
   tags: ["configure"]
+
+# WIP: Work around for legacy Ansible and modern Python
+#########################################################################
+- name: Get node_metrics with curl  # noqa: command-instead-of-module
+  ansible.builtin.command:
+    cmd: >-
+      curl -sS
+      --cacert "{{ rke2_data_dir }}/server/tls/server-ca.crt"
+      --cert "{{ rke2_data_dir }}/server/tls/client-admin.crt"
+      --key "{{ rke2_data_dir }}/server/tls/client-admin.key"
+      -w "%{http_code}"
+      https://localhost:10250/metrics
+  when:
+    - rke2_legacy_ansible_modern_python
+  register: node_metrics_raw
+  retries: "{{ check_node_ready_retries }}"
+  delay: "{{ check_node_ready_delay }}"
+  until: node_metrics_raw.rc == 0
+  ignore_errors: "{{ check_node_ready_ignore_errors }}"
+  changed_when: false
+  tags: ["configure"]
+
+- name: Normalize curl output
+  ansible.builtin.set_fact:
+    node_metrics:
+      status: "{{ (node_metrics_raw.stdout.splitlines() | last | default('')) | int }}"
+      content: "{{ (node_metrics_raw.stdout.splitlines()[:-1] | join('\n')) }}"
+  when:
+    - rke2_legacy_ansible_modern_python
+    - node_metrics_raw is defined
+    - node_metrics_raw.stdout is defined
+    - node_metrics_raw.stdout | length > 0
+  tags: ["configure"]
+#########################################################################
 
 - name: Check that node_metrics collection was successful
   ansible.builtin.set_fact:
