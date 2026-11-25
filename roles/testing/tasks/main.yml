@@ -5,7 +5,7 @@
 
 - name: Manifest test
   ansible.builtin.include_tasks: manifest_test.yml
-  when: inventory_hostname in groups['rke2_servers'][0]
+  when: inventory_hostname == groups['rke2_servers'][0]
 
 - name: Basic kubectl tests
   ansible.builtin.include_tasks: kubectl_basic.yml

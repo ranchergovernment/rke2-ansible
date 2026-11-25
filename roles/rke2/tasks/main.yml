@@ -86,14 +86,14 @@
   when:
     - rke2_manifest_config_directory is defined
     - rke2_manifest_config_directory | length > 0
-    - inventory_hostname in groups['rke2_servers'][0]
+    - inventory_hostname == groups['rke2_servers'][0]
   tags: ["addons"]
 
 # is the ready_servers array is empty, we assume it's a new cluster and use the first server in groups['rke2_servers']
 - name: Start the first rke2 node
   ansible.builtin.include_tasks: first_server.yml
   when:
-    - inventory_hostname in groups['rke2_servers'][0]
+    - inventory_hostname == groups['rke2_servers'][0]
     - ready_servers is not defined or ready_servers | length == 0
 
 - name: Save_generated_token.yml
@@ -131,7 +131,7 @@
   when:
     - rke2_manifest_config_post_run_directory is defined
     - rke2_manifest_config_post_run_directory | length > 0
-    - inventory_hostname in groups['rke2_servers'][0]
+    - inventory_hostname == groups['rke2_servers'][0]
   tags: ["addons"]
 
 - name: Secure files created by installer
